@@ -1,0 +1,13 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "games.enchanted.eg_stop_unloading_my_shaders.fabric.mixin",
+  "compatibilityLevel": "JAVA_${java_ver}",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

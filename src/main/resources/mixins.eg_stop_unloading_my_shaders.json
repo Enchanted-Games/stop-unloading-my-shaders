@@ -1,0 +1,17 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "games.enchanted.eg_stop_unloading_my_shaders.common.mixin",
+  "compatibilityLevel": "JAVA_${java_ver}",
+  "mixins": [
+  ],
+  "client": [
+    "ShaderManagerPreprocessorMixin",
+    "ShaderManagerMixin",
+    "accessor.ShaderManagerAccessor",
+    "gl.GlDeviceMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
