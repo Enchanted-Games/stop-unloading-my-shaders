@@ -16,12 +16,13 @@ public class ModConstants {
     public static final String MOD_NAME = "Stop Unloading My Shaders";
     public static final String MOD_ID = "eg_stop_unloading_my_shaders";
 
+    public static final String TARGET_PLATFORM =
     //? if fabric {
-    public static final String TARGET_PLATFORM = "fabric";
-    //?}
-    //? if neoforge {
-    /*public static final String TARGET_PLATFORM = "neoforge";
-    *///?}
+        "fabric"
+    //?} else {
+        /*"neoforge"
+     *///?}
+    ;
 
     private static ShaderManager.Configs vanillaShaderConfigs;
 
