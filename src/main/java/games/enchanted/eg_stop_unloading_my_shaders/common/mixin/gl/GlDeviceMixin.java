@@ -56,6 +56,7 @@ public class GlDeviceMixin {
     )
     private void eg_sumy$showFailedToFindShaderMessage(Logger instance, String string, Object shaderType, Object id, Operation<Void> original) {
         ShaderReloadManager.showShaderErrorMessage(new ShaderReloadManager.ShaderInfo((ResourceLocation) id, ((ShaderType) shaderType).getName()), "Couldn't find source for %s shader: %s".formatted(shaderType, id), null);
+        original.call(instance, string, shaderType, id);
     }
 
     // wraps the second error call after getting the shader compilation info
@@ -70,5 +71,6 @@ public class GlDeviceMixin {
     )
     private void eg_sumy$showFailedToCompileShaderMessage(Logger instance, String string, Object[] objects, Operation<Void> original) {
         ShaderReloadManager.showShaderErrorMessage(new ShaderReloadManager.ShaderInfo((ResourceLocation) objects[1], objects[0].toString()), "Couldn't compile %s shader: %s".formatted(objects[0], objects[1]), objects[2].toString());
+        original.call(instance, string, objects);
     }
 }
