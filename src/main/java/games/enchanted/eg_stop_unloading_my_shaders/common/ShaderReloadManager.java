@@ -1,12 +1,20 @@
 package games.enchanted.eg_stop_unloading_my_shaders.common;
 
+import games.enchanted.eg_stop_unloading_my_shaders.common.mixin.accessor.KeyboardHandlerAccessor;
+import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.resources.SimpleReloadInstance;
+import net.minecraft.util.Unit;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 
 public abstract class ShaderReloadManager {
     private static boolean isHotReloading = false;
@@ -16,9 +24,22 @@ public abstract class ShaderReloadManager {
 
     public static void triggerReload() {
         isHotReloading = true;
-        // TODO: reload stuff
-        isHotReloading = false;
-        knownErrorsThisReload.clear();
+        showReloadingShadersMessage();
+        Minecraft minecraft = Minecraft.getInstance();
+        SimpleReloadInstance.create(
+            minecraft.getResourceManager(),
+            List.of(minecraft.getShaderManager()),
+            Util.backgroundExecutor(),
+            minecraft,
+            CompletableFuture.completedFuture(Unit.INSTANCE),
+            false
+        ).done()
+        .whenComplete(((result, exception) -> {
+            isHotReloading = false;
+            knownErrorsThisReload.clear();
+            if(exception == null) return;
+            Logging.error("Error while reloading shaders: {}", exception);
+        }));
     }
 
     public static void showShaderErrorMessage(ShaderInfo shaderInfo, String shortMessage, @Nullable String fullMessage) {
@@ -34,6 +55,10 @@ public abstract class ShaderReloadManager {
         if(fullMessage != null) {
             showMessage(Component.literal(fullMessage));
         }
+    }
+
+    public static void showReloadingShadersMessage() {
+        showMessage(KeyboardHandlerAccessor.eg_sumy$invokeDecorateDebugComponent(ChatFormatting.YELLOW, Component.literal("Reloading Shaders")));
     }
 
     public static void showMessage(Component message) {
