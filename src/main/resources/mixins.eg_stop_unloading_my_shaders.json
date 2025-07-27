@@ -6,8 +6,9 @@
   "mixins": [
   ],
   "client": [
-    "ShaderManagerPreprocessorMixin",
+    "CompilationCacheMixin",
     "ShaderManagerMixin",
+    "ShaderManagerPreprocessorMixin",
     "accessor.ShaderManagerAccessor",
     "gl.GlDeviceMixin"
   ],

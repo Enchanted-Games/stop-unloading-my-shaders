@@ -3,6 +3,7 @@ package games.enchanted.eg_stop_unloading_my_shaders.common;
 import games.enchanted.eg_stop_unloading_my_shaders.common.mixin.accessor.ShaderManagerAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderManager;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.VanillaPackResources;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
@@ -31,5 +32,10 @@ public class ModConstants {
         ResourceManager resourceManager = new MultiPackResourceManager(PackType.CLIENT_RESOURCES, List.of(vanillaPack));
         vanillaShaderConfigs = ((ShaderManagerAccessor) Minecraft.getInstance().getShaderManager()).eg_sumy$invokePrepare(resourceManager, InactiveProfiler.INSTANCE);
         return vanillaShaderConfigs;
+    }
+
+    public static Component getFailedToLoadPostChainMessage(String name) {
+        // TODO: proper translation keys
+        return Component.translatableWithFallback("", "Failed to load post_effect %s:", name);
     }
 }
