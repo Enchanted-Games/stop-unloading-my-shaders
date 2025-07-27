@@ -51,7 +51,7 @@ public class GlDeviceMixin {
 
     // wraps the first error call after checking if the shader source exists
     @WrapOperation(
-        at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", ordinal = 0),
+        at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", ordinal = 0, remap = false),
         method = "compileShader"
     )
     private void eg_sumy$showFailedToFindShaderMessage(Logger instance, String string, Object shaderType, Object id, Operation<Void> original) {
@@ -61,11 +61,12 @@ public class GlDeviceMixin {
 
     // wraps the second error call after getting the shader compilation info
     @WrapOperation(
-        slice = @Slice(from = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/GlStateManager;glGetShaderInfoLog(II)Ljava/lang/String;")),
+        slice = @Slice(from = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/GlStateManager;glGetShaderInfoLog(II)Ljava/lang/String;", remap = false)),
         at = @At(
             value = "INVOKE",
             target = "Lorg/slf4j/Logger;error(Ljava/lang/String;[Ljava/lang/Object;)V",
-            ordinal = 0
+            ordinal = 0,
+            remap = false
         ),
         method = "compileShader"
     )

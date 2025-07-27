@@ -32,7 +32,7 @@ public class ShaderManagerMixin {
 
     // ResourceLocation local is the result of POST_CHAIN_ID_CONVERTER.fileToId
     @WrapOperation(
-        at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V"),
+        at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false),
         method = "loadPostChain(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/server/packs/resources/Resource;Lcom/google/common/collect/ImmutableMap$Builder;)V"
     )
     private static void eg_sumy$addDummyPostChainConfigIfFailedToParse(Logger instance, String string, Object o, Object exception, Operation<Void> original, ResourceLocation rawLocation, Resource postChain, ImmutableMap.Builder<ResourceLocation, PostChainConfig> output, @Local(ordinal = 1) ResourceLocation name) {

@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.SimpleReloadInstance;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Unit;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,14 +44,16 @@ public abstract class ShaderReloadManager {
     public static void showShaderErrorMessage(ShaderInfo shaderInfo, String shortMessage, @Nullable String fullMessage) {
         if(knownErrorsThisReload.contains(shaderInfo)) {
             if(shownHiddenMessagesWarning.contains(shaderInfo)) return;
-            showMessage(Component.literal("This shader has multiple warnings, see log for more info").withColor(0xbbbbbb));
+            if(isHotReloading) {
+                showMessage(Component.literal("This shader has multiple warnings, see log for more info").withColor(CommonColors.LIGHT_GRAY));
+            }
             shownHiddenMessagesWarning.add(shaderInfo);
             return;
         } else {
             knownErrorsThisReload.add(shaderInfo);
         }
         showMessage(Component.literal(shortMessage));
-        if(fullMessage != null) {
+        if(fullMessage != null && isHotReloading) {
             showMessage(Component.literal(fullMessage));
         }
     }
@@ -77,6 +80,9 @@ public abstract class ShaderReloadManager {
 
     public static void finishedVanillaReload() {
         if(isHotReloading) return;
+        if(!knownErrorsThisReload.isEmpty()) {
+            showMessage(Component.literal("Extra details may be hidden, run F3 + R for full details").withColor(CommonColors.LIGHT_GRAY));
+        }
         clearKnownErrors();
     }
 
