@@ -5,7 +5,6 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.SimpleReloadInstance;
 import net.minecraft.util.Unit;
@@ -14,7 +13,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CompletionException;
 
 public abstract class ShaderReloadManager {
     private static boolean isHotReloading = false;
@@ -36,7 +34,7 @@ public abstract class ShaderReloadManager {
         ).done()
         .whenComplete(((result, exception) -> {
             isHotReloading = false;
-            knownErrorsThisReload.clear();
+            clearKnownErrors();
             if(exception == null) return;
             Logging.error("Error while reloading shaders: {}", exception);
         }));
