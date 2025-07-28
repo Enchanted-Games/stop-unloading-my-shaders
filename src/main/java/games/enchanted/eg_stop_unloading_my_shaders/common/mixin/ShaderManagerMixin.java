@@ -4,8 +4,8 @@ import com.google.common.collect.ImmutableMap;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
-import games.enchanted.eg_stop_unloading_my_shaders.common.ModConstants;
 import games.enchanted.eg_stop_unloading_my_shaders.common.ShaderReloadManager;
+import games.enchanted.eg_stop_unloading_my_shaders.common.translations.Messages;
 import games.enchanted.eg_stop_unloading_my_shaders.common.util.PostChainUtil;
 import net.minecraft.client.renderer.PostChainConfig;
 import net.minecraft.client.renderer.ShaderManager;
@@ -38,7 +38,7 @@ public class ShaderManagerMixin {
     private static void eg_sumy$addDummyPostChainConfigIfFailedToParse(Logger instance, String string, Object o, Object exception, Operation<Void> original, ResourceLocation rawLocation, Resource postChain, ImmutableMap.Builder<ResourceLocation, PostChainConfig> output, @Local(ordinal = 1) ResourceLocation name) {
         original.call(instance, string, o, exception);
         output.put(name, PostChainUtil.createDummyPostChainConfig());
-        ShaderReloadManager.showMessage(ModConstants.getFailedToLoadPostChainMessage(name.toString()));
-        ShaderReloadManager.showMessage(Component.literal(((Exception) exception).getMessage()));
+        ShaderReloadManager.showErrorMessage(Messages.getFailedToLoadPostChainMessage(name.toString()));
+        ShaderReloadManager.showContinuationErrorMessage(Component.literal(((Exception) exception).getMessage()));
     }
 }

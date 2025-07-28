@@ -10,7 +10,6 @@
     "KeyboardHandlerMixin",
     "ShaderManagerMixin",
     "ShaderManagerPreprocessorMixin",
-    "accessor.KeyboardHandlerAccessor",
     "accessor.ShaderManagerAccessor",
     "gl.GlDeviceMixin"
   ],

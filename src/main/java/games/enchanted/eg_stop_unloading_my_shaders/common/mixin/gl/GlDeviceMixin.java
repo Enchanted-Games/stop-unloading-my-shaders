@@ -7,9 +7,12 @@ import com.mojang.blaze3d.opengl.GlDevice;
 import com.mojang.blaze3d.opengl.GlRenderPipeline;
 import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.shaders.ShaderType;
+import games.enchanted.eg_stop_unloading_my_shaders.common.Logging;
 import games.enchanted.eg_stop_unloading_my_shaders.common.ModConstants;
 import games.enchanted.eg_stop_unloading_my_shaders.common.ShaderReloadManager;
+import games.enchanted.eg_stop_unloading_my_shaders.common.translations.Messages;
 import net.minecraft.client.renderer.ShaderManager;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -49,14 +52,53 @@ public class GlDeviceMixin {
         );
     }
 
+    // wraps the error call after attempting to link gl programs
+    @WrapOperation(
+        at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false),
+        slice = @Slice(from = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/GlProgram;link(Lcom/mojang/blaze3d/opengl/GlShaderModule;Lcom/mojang/blaze3d/opengl/GlShaderModule;Lcom/mojang/blaze3d/vertex/VertexFormat;Ljava/lang/String;)Lcom/mojang/blaze3d/opengl/GlProgram;")),
+        method = "compilePipeline"
+    )
+    private void eg_sumy$logShaderLinkerError(Logger instance, String string, Object oLocation, Object oCompilationException, Operation<Void> original) {
+        original.call(instance, string, oLocation, oCompilationException);
+        if(oLocation instanceof ResourceLocation location1 && oCompilationException instanceof ShaderManager.CompilationException compilationException) {
+            ShaderReloadManager.showShaderErrorMessage(
+                Messages.getFailedToLinkMessage(location1.toString()),
+                Component.literal(compilationException.getMessage())
+            );
+        } else {
+            ShaderReloadManager.showShaderErrorMessage(
+                Messages.getFailedToLinkMessage(oLocation.toString()),
+                Messages.getCouldntGetFullErrorMessage()
+            );
+            Logging.error("eg_sumy$logShaderLinkerError did not receive the correct parameters, please report this! Got '%s' and '%s'".formatted(
+                oLocation.getClass().getName(),
+                oCompilationException.getClass().getName()
+            ));
+        }
+    }
+
     // wraps the first error call after checking if the shader source exists
     @WrapOperation(
         at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", ordinal = 0, remap = false),
         method = "compileShader"
     )
-    private void eg_sumy$showFailedToFindShaderMessage(Logger instance, String string, Object shaderType, Object id, Operation<Void> original) {
-        ShaderReloadManager.showShaderErrorMessage(new ShaderReloadManager.ShaderInfo((ResourceLocation) id, ((ShaderType) shaderType).getName()), "Couldn't find source for %s shader: %s".formatted(shaderType, id), null);
-        original.call(instance, string, shaderType, id);
+    private void eg_sumy$showFailedToFindShaderMessage(Logger instance, String string, Object oShaderType, Object oLocation, Operation<Void> original) {
+        if(oLocation instanceof ResourceLocation location && oShaderType instanceof ShaderType shaderType) {
+            ShaderReloadManager.showShaderErrorMessage(
+                Messages.getCouldntFindSourceMessage(shaderType.getName(), location.toString()),
+                null
+            );
+        } else {
+            ShaderReloadManager.showShaderErrorMessage(
+                Messages.getCouldntFindSourceMessage(oShaderType.toString(), oLocation.toString()),
+                null
+            );
+            Logging.error("eg_sumy$showFailedToFindShaderMessage did not receive the correct parameters, please report this! Got '%s' and '%s'".formatted(
+                oShaderType.getClass().getName(),
+                oLocation.getClass().getName()
+            ));
+        }
+        original.call(instance, string, oShaderType, oLocation);
     }
 
     // wraps the second error call after getting the shader compilation info
@@ -71,7 +113,22 @@ public class GlDeviceMixin {
         method = "compileShader"
     )
     private void eg_sumy$showFailedToCompileShaderMessage(Logger instance, String string, Object[] objects, Operation<Void> original) {
-        ShaderReloadManager.showShaderErrorMessage(new ShaderReloadManager.ShaderInfo((ResourceLocation) objects[1], objects[0].toString()), "Couldn't compile %s shader: %s".formatted(objects[0], objects[1]), objects[2].toString());
+        if(objects[1] instanceof ResourceLocation location && objects[0] instanceof String typeName && objects[2] instanceof String compilationMessage) {
+            ShaderReloadManager.showShaderErrorMessage(
+                Messages.getCouldntCompileShaderMessage(typeName, location.toString()),
+                Component.literal(compilationMessage)
+            );
+        } else {
+            ShaderReloadManager.showShaderErrorMessage(
+                Messages.getCouldntCompileShaderMessage(objects[0].toString(), objects[1].toString()),
+                Messages.getCouldntGetFullErrorMessage()
+            );
+            Logging.error("eg_sumy$showFailedToCompileShaderMessage did not receive the correct parameters, please report this! Got '%s', '%s', and '%s'".formatted(
+                objects[0].getClass().getName(),
+                objects[1].getClass().getName(),
+                objects[2].getClass().getName()
+            ));
+        }
         original.call(instance, string, objects);
     }
 }

@@ -32,8 +32,9 @@ public abstract class KeyboardHandlerMixin {
         if(this.minecraft.screen instanceof GameModeSwitcherScreen) return;
 
         if(action != 0 && (this.minecraft.screen != null)) {
-            if(!InputConstants.isKeyDown(windowPointer, GLFW.GLFW_KEY_F3) && !InputConstants.isKeyDown(windowPointer, GLFW.GLFW_KEY_R)) return;
-            handleDebugKeys(key);
+            if(InputConstants.isKeyDown(windowPointer, GLFW.GLFW_KEY_F3) && InputConstants.isKeyDown(windowPointer, GLFW.GLFW_KEY_R)) {
+                handleDebugKeys(key);
+            }
         }
     }
 

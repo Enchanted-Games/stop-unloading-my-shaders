@@ -3,8 +3,8 @@ package games.enchanted.eg_stop_unloading_my_shaders.common.mixin;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import games.enchanted.eg_stop_unloading_my_shaders.common.Logging;
-import games.enchanted.eg_stop_unloading_my_shaders.common.ModConstants;
 import games.enchanted.eg_stop_unloading_my_shaders.common.ShaderReloadManager;
+import games.enchanted.eg_stop_unloading_my_shaders.common.translations.Messages;
 import games.enchanted.eg_stop_unloading_my_shaders.common.util.PostChainUtil;
 import net.minecraft.client.renderer.CachedOrthoProjectionMatrixBuffer;
 import net.minecraft.client.renderer.PostChain;
@@ -28,8 +28,8 @@ public class CompilationCacheMixin {
         try {
             originalChain = original.call(config, textureManager, externalTargets, name, projectionMatrixBuffer);
         } catch (Exception e) {
-            ShaderReloadManager.showMessage(ModConstants.getFailedToLoadPostChainMessage(name.toString()));
-            ShaderReloadManager.showMessage(Component.literal(e.getMessage()));
+            ShaderReloadManager.showErrorMessage(Messages.getFailedToLoadPostChainMessage(name.toString()));
+            ShaderReloadManager.showContinuationErrorMessage(Component.literal(e.getMessage()));
             Logging.error("Failed to load post chain {}:\n{}", name, e);
             return original.call(PostChainUtil.createDummyPostChainConfig(), textureManager, externalTargets, name, projectionMatrixBuffer);
         }

@@ -1,0 +1,14 @@
+{
+  "prefix.eg_stop_unloading_my_shaders.info": "[SUMY Info]:",
+  "prefix.eg_stop_unloading_my_shaders.error": "[SUMY Error]:",
+  "prefix.eg_stop_unloading_my_shaders.error_continuation": "└",
+
+  "debug.eg_stop_unloading_my_shaders.reloading_shaders": "Reloading shaders",
+
+  "debug.eg_stop_unloading_my_shaders.post_chain_load_error": "Failed to load post_effect %s:",
+  "debug.eg_stop_unloading_my_shaders.linkage_error": "Failed to link programs for pipeline %s:",
+  "debug.eg_stop_unloading_my_shaders.no_source_error": "Couldn't find source for %s shader: %s",
+  "debug.eg_stop_unloading_my_shaders.compilation_error": "Couldn't compile %s shader: %s",
+
+  "debug.eg_stop_unloading_my_shaders.no_full_error": "Couldn't get full error message"
+}

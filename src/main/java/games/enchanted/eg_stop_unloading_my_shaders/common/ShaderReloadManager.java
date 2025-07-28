@@ -1,11 +1,9 @@
 package games.enchanted.eg_stop_unloading_my_shaders.common;
 
-import games.enchanted.eg_stop_unloading_my_shaders.common.mixin.accessor.KeyboardHandlerAccessor;
-import net.minecraft.ChatFormatting;
+import games.enchanted.eg_stop_unloading_my_shaders.common.translations.Messages;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.SimpleReloadInstance;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Unit;
@@ -18,8 +16,7 @@ import java.util.concurrent.CompletableFuture;
 public abstract class ShaderReloadManager {
     private static boolean isHotReloading = false;
     private static boolean shouldLoadVanillaFallback = false;
-    private static final List<ShaderInfo> knownErrorsThisReload = new ArrayList<>();
-    private static final List<ShaderInfo> shownHiddenMessagesWarning = new ArrayList<>();
+    private static final List<ShaderLogMessage> knownErrorsThisReload = new ArrayList<>();
 
     public static void triggerReload() {
         isHotReloading = true;
@@ -41,25 +38,29 @@ public abstract class ShaderReloadManager {
         }));
     }
 
-    public static void showShaderErrorMessage(ShaderInfo shaderInfo, String shortMessage, @Nullable String fullMessage) {
-        if(knownErrorsThisReload.contains(shaderInfo)) {
-            if(shownHiddenMessagesWarning.contains(shaderInfo)) return;
-            if(isHotReloading) {
-                showMessage(Component.literal("This shader has multiple warnings, see log for more info").withColor(CommonColors.LIGHT_GRAY));
-            }
-            shownHiddenMessagesWarning.add(shaderInfo);
+    public static void showReloadingShadersMessage() {
+        showMessage(Messages.getReloadingShadersMessage());
+    }
+
+    public static void showShaderErrorMessage(Component shortMessage, @Nullable Component longMessage) {
+        ShaderLogMessage shaderLogMessage = new ShaderLogMessage(shortMessage.getString(), longMessage == null ? null : longMessage.getString());
+        if(knownErrorsThisReload.contains(shaderLogMessage)) {
             return;
         } else {
-            knownErrorsThisReload.add(shaderInfo);
+            knownErrorsThisReload.add(shaderLogMessage);
         }
-        showMessage(Component.literal(shortMessage));
-        if(fullMessage != null && isHotReloading) {
-            showMessage(Component.literal(fullMessage));
+        showErrorMessage(shortMessage);
+        if(longMessage != null) {
+            showContinuationErrorMessage(longMessage);
         }
     }
 
-    public static void showReloadingShadersMessage() {
-        showMessage(KeyboardHandlerAccessor.eg_sumy$invokeDecorateDebugComponent(ChatFormatting.YELLOW, Component.literal("Reloading Shaders")));
+    public static void showErrorMessage(Component message) {
+        showMessage(Messages.appendMessagePrefix(Messages.MessagePrefix.ERROR, message));
+    }
+
+    public static void showContinuationErrorMessage(Component message) {
+        showMessage(Messages.appendMessagePrefix(Messages.MessagePrefix.ERROR_CONTINUATION, Messages.colourMessageGrey(message)));
     }
 
     public static void showMessage(Component message) {
@@ -68,7 +69,6 @@ public abstract class ShaderReloadManager {
 
     private static void clearKnownErrors() {
         knownErrorsThisReload.clear();
-        shownHiddenMessagesWarning.clear();
     }
 
     public static boolean shouldLoadVanillaFallback() {
@@ -80,11 +80,8 @@ public abstract class ShaderReloadManager {
 
     public static void finishedVanillaReload() {
         if(isHotReloading) return;
-        if(!knownErrorsThisReload.isEmpty()) {
-            showMessage(Component.literal("Extra details may be hidden, run F3 + R for full details").withColor(CommonColors.LIGHT_GRAY));
-        }
         clearKnownErrors();
     }
 
-    public record ShaderInfo(ResourceLocation location, String type) {}
+    public record ShaderLogMessage(String shortMessage, String longMessage) {}
 }
