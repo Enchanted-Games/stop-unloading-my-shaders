@@ -26,7 +26,7 @@ public abstract class KeyboardHandlerMixin {
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;getWindow()Lcom/mojang/blaze3d/platform/Window;", ordinal = 0),
         method = "keyPress"
     )
-    private void eg_sumy$handleReloadShaderKeys(long windowPointer, int key, int scanCode, int action, int modifiers, CallbackInfo ci) {
+    private void eg_sumr$handleReloadShaderKeys(long windowPointer, int key, int scanCode, int action, int modifiers, CallbackInfo ci) {
         if(ModEntry.debugKeysAnywhereEnabled) return;
         if(this.minecraft.screen instanceof PauseScreen pause && !pause.showsPauseMenu()) return;
         if(this.minecraft.screen instanceof GameModeSwitcherScreen) return;
@@ -42,7 +42,7 @@ public abstract class KeyboardHandlerMixin {
         at = @At("RETURN"),
         method = "handleDebugKeys"
     )
-    private void eg_sumy$addReloadShadersKey(int key, CallbackInfoReturnable<Boolean> cir) {
+    private void eg_sumr$addReloadShadersKey(int key, CallbackInfoReturnable<Boolean> cir) {
         if(key == GLFW.GLFW_KEY_R) {
             ShaderReloadManager.triggerReload();
         }

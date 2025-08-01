@@ -9,5 +9,5 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(ShaderManager.class)
 public interface ShaderManagerAccessor {
     @Invoker("prepare")
-    ShaderManager.Configs eg_sumy$invokePrepare(ResourceManager resourceManager, ProfilerFiller profiler);
+    ShaderManager.Configs eg_sumr$invokePrepare(ResourceManager resourceManager, ProfilerFiller profiler);
 }

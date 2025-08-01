@@ -30,7 +30,7 @@ public class ModConstants {
 
         VanillaPackResources vanillaPack = Minecraft.getInstance().getVanillaPackResources();
         ResourceManager resourceManager = new MultiPackResourceManager(PackType.CLIENT_RESOURCES, List.of(vanillaPack));
-        vanillaShaderConfigs = ((ShaderManagerAccessor) Minecraft.getInstance().getShaderManager()).eg_sumy$invokePrepare(resourceManager, InactiveProfiler.INSTANCE);
+        vanillaShaderConfigs = ((ShaderManagerAccessor) Minecraft.getInstance().getShaderManager()).eg_sumr$invokePrepare(resourceManager, InactiveProfiler.INSTANCE);
         return vanillaShaderConfigs;
     }
 }

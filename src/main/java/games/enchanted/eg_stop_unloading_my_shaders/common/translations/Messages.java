@@ -19,6 +19,10 @@ public class Messages {
         return Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.post_chain_load_error", "_Failed to load post_effect %s:", location);
     }
 
+    public static Component getCouldntFindPostChainSource(String location) {
+        return Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.no_post_chain_source_error", "_Couldn't find config .json for post_effect: %s", location);
+    }
+
     public static Component getFailedToLinkMessage(String pipelineLocation) {
         return Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.linkage_error", "_Failed to link programs for pipeline %s:", pipelineLocation);
     }
@@ -40,8 +44,8 @@ public class Messages {
     }
 
     public enum MessagePrefix {
-        INFO("prefix.eg_stop_unloading_my_shaders.info", "_[SUMY Info]:", Style.EMPTY.withBold(true).withColor(ChatFormatting.YELLOW)),
-        ERROR("prefix.eg_stop_unloading_my_shaders.error", "_[SUMY Error]:", Style.EMPTY.withBold(true).withColor(ChatFormatting.RED)),
+        INFO("prefix.eg_stop_unloading_my_shaders.info", "_[SUMR Info]:", Style.EMPTY.withBold(true).withColor(ChatFormatting.YELLOW)),
+        ERROR("prefix.eg_stop_unloading_my_shaders.error", "_[SUMR Error]:", Style.EMPTY.withBold(true).withColor(ChatFormatting.RED)),
         ERROR_CONTINUATION("prefix.eg_stop_unloading_my_shaders.error_continuation", "_└", Style.EMPTY.withBold(true).withColor(ChatFormatting.RED));
 
         private final String translationKey;

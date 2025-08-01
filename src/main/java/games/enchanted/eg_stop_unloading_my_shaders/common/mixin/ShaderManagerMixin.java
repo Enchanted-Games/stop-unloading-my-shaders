@@ -26,7 +26,7 @@ public class ShaderManagerMixin {
         at = @At("RETURN"),
         method = "apply(Lnet/minecraft/client/renderer/ShaderManager$Configs;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V"
     )
-    private void eg_sumy$onShaderManagerFinish(ShaderManager.Configs object, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
+    private void eg_sumr$onShaderManagerFinish(ShaderManager.Configs object, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
         ShaderReloadManager.finishedVanillaReload();
     }
 
@@ -35,7 +35,7 @@ public class ShaderManagerMixin {
         at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false),
         method = "loadPostChain(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/server/packs/resources/Resource;Lcom/google/common/collect/ImmutableMap$Builder;)V"
     )
-    private static void eg_sumy$addDummyPostChainConfigIfFailedToParse(Logger instance, String string, Object o, Object exception, Operation<Void> original, ResourceLocation rawLocation, Resource postChain, ImmutableMap.Builder<ResourceLocation, PostChainConfig> output, @Local(ordinal = 1) ResourceLocation name) {
+    private static void eg_sumr$addDummyPostChainConfigIfFailedToParse(Logger instance, String string, Object o, Object exception, Operation<Void> original, ResourceLocation rawLocation, Resource postChain, ImmutableMap.Builder<ResourceLocation, PostChainConfig> output, @Local(ordinal = 1) ResourceLocation name) {
         original.call(instance, string, o, exception);
         output.put(name, PostChainUtil.createDummyPostChainConfig());
         ShaderReloadManager.showErrorMessage(Messages.getFailedToLoadPostChainMessage(name.toString()));

@@ -11,7 +11,7 @@ public class ShaderManagerPreprocessorMixin {
     @WrapMethod(
         method = "applyImport"
     )
-    public String eg_sumy$catchImportErrors(boolean useFullPath, String directory, Operation<String> original) {
+    public String eg_sumr$catchImportErrors(boolean useFullPath, String directory, Operation<String> original) {
         String originalImport;
         try {
             originalImport = original.call(useFullPath, directory);
