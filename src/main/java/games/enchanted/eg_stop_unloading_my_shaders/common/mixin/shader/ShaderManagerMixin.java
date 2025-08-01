@@ -1,4 +1,4 @@
-package games.enchanted.eg_stop_unloading_my_shaders.common.mixin;
+package games.enchanted.eg_stop_unloading_my_shaders.common.mixin.shader;
 
 import com.google.common.collect.ImmutableMap;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;

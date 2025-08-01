@@ -6,12 +6,14 @@
   "mixins": [
   ],
   "client": [
-    "CompilationCacheMixin",
-    "KeyboardHandlerMixin",
-    "ShaderManagerMixin",
-    "ShaderManagerPreprocessorMixin",
+    "CustomOverlayRendererMixin",
+    "CustomOverlayTickerMixin",
     "accessor.ShaderManagerAccessor",
-    "gl.GlDeviceMixin"
+    "shader.CompilationCacheMixin",
+    "shader.KeyboardHandlerMixin",
+    "shader.ShaderManagerMixin",
+    "shader.ShaderManagerPreprocessorMixin",
+    "shader.gl.GlDeviceMixin"
   ],
   "injectors": {
     "defaultRequire": 1

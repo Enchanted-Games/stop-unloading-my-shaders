@@ -1,4 +1,4 @@
-package games.enchanted.eg_stop_unloading_my_shaders.common.mixin;
+package games.enchanted.eg_stop_unloading_my_shaders.common.mixin.shader;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import games.enchanted.eg_stop_unloading_my_shaders.common.ModEntry;

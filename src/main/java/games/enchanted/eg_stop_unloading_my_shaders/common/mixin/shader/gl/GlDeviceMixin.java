@@ -1,4 +1,4 @@
-package games.enchanted.eg_stop_unloading_my_shaders.common.mixin.gl;
+package games.enchanted.eg_stop_unloading_my_shaders.common.mixin.shader.gl;
 
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
