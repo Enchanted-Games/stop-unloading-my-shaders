@@ -30,6 +30,14 @@ public class ShaderManagerMixin {
         ShaderReloadManager.finishedVanillaReload();
     }
 
+    @Inject(
+        at = @At("HEAD"),
+        method = "apply(Lnet/minecraft/client/renderer/ShaderManager$Configs;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V"
+    )
+    private void eg_sumr$onShaderManagerStart(ShaderManager.Configs object, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
+        ShaderReloadManager.startedVanillaReload();
+    }
+
     // ResourceLocation local is the result of POST_CHAIN_ID_CONVERTER.fileToId
     @WrapOperation(
         at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false),

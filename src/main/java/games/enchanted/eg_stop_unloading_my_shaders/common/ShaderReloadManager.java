@@ -1,5 +1,6 @@
 package games.enchanted.eg_stop_unloading_my_shaders.common;
 
+import games.enchanted.eg_stop_unloading_my_shaders.common.screen.CustomOverlayManager;
 import games.enchanted.eg_stop_unloading_my_shaders.common.translations.Messages;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -19,6 +20,7 @@ public abstract class ShaderReloadManager {
 
     public static void triggerReload() {
         isHotReloading = true;
+        CustomOverlayManager.SHADER_MESSAGE_OVERLAY.clear();
         showReloadingShadersMessage();
         Minecraft minecraft = Minecraft.getInstance();
         SimpleReloadInstance.create(
@@ -64,6 +66,7 @@ public abstract class ShaderReloadManager {
 
     public static void showMessage(Component message) {
         Minecraft.getInstance().gui.getChat().addMessage(message);
+        CustomOverlayManager.SHADER_MESSAGE_OVERLAY.addMessage(message);
     }
 
     private static void clearKnownErrors() {
@@ -80,6 +83,10 @@ public abstract class ShaderReloadManager {
     public static void finishedVanillaReload() {
         if(isHotReloading) return;
         clearKnownErrors();
+    }
+
+    public static void startedVanillaReload() {
+        CustomOverlayManager.SHADER_MESSAGE_OVERLAY.clear();
     }
 
     public record ShaderLogMessage(String shortMessage, String longMessage) {}
