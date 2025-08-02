@@ -10,7 +10,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,9 +21,11 @@ public class ShaderMessageOverlay extends CustomOverlay {
     private static final ResourceLocation ARROW_DOWN_LOCATION = ResourceLocation.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/arrow_down");
     private static final ResourceLocation ARROW_UP_LOCATION = ResourceLocation.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/arrow_up");
 
+    private int removePinnedAtAge = -1;
+    private int removeAllAtAge = -1;
     private final ArrayList<Component> rawMessages = new ArrayList<>();
     private final ArrayList<FormattedCharSequence> splitMessageLines = new ArrayList<>();
-    private final HashMap<Integer, Integer> messageIndexToRemovalTime = new HashMap<>();
+
     private int currentScrollIndex = 0;
 
     private final float scale = 1.0f;
@@ -35,24 +36,20 @@ public class ShaderMessageOverlay extends CustomOverlay {
     private int age = 0;
 
     public void addMessage(Component message) {
-        addTimedMessage(message, 0);
+        addPinnedMessage(message, -1);
     }
 
-    public void addTimedMessage(Component message, int ticksVisible) {
+    public void addPinnedMessage(Component message, int ticksVisible) {
         List<FormattedCharSequence> wrapped = ComponentRenderUtils.wrapComponents(message, lineWidth, Minecraft.getInstance().font);
-        this.splitMessageLines.addAll(wrapped);
-        this.rawMessages.add(message);
-        scrollByLines(0);
-        if(ticksVisible > 0) {
-            messageIndexToRemovalTime.put(this.rawMessages.size() - 1, this.age + ticksVisible);
+        if(ticksVisible > -1) {
+            this.splitMessageLines.addAll(0, wrapped);
+            this.rawMessages.addFirst(message);
+            this.removePinnedAtAge = this.age + ticksVisible;
+        } else {
+            this.splitMessageLines.addAll(wrapped);
+            this.rawMessages.add(message);
         }
-    }
-
-    public void clear() {
-        this.splitMessageLines.clear();
-        this.rawMessages.clear();
-        this.messageIndexToRemovalTime.clear();
-        this.currentScrollIndex = 0;
+        scrollByLines(0);
     }
 
     private void scrollByLines(int lines) {
@@ -71,23 +68,15 @@ public class ShaderMessageOverlay extends CustomOverlay {
     public void tick() {
         super.tick();
         this.age++;
-        if(!messageIndexToRemovalTime.isEmpty()) {
-            for (Map.Entry<Integer, Integer> entry : this.messageIndexToRemovalTime.entrySet()) {
-                if(entry.getValue() > this.age) continue;
-                removeMessage(entry.getKey());
-            }
+        if(this.removePinnedAtAge > -1 && this.age > this.removePinnedAtAge) {
+            this.rawMessages.removeFirst();
+            resplitMessages();
+            this.removePinnedAtAge = -1;
         }
-    }
-
-    private void removeMessage(int messageIndex) {
-        this.rawMessages.remove(messageIndex);
-        for (Map.Entry<Integer, Integer> entry : this.messageIndexToRemovalTime.entrySet()) {
-            if(entry.getKey() < messageIndex) continue;
-            this.messageIndexToRemovalTime.remove(entry.getKey(), entry.getValue());
-            if(entry.getKey() == 0) continue;
-            this.messageIndexToRemovalTime.put(entry.getKey() - 1, entry.getValue());
+        if(this.removeAllAtAge > -1 && this.age > this.removeAllAtAge) {
+            this.clear();
+            this.removeAllAtAge = -1;
         }
-        resplitMessages();
     }
 
     private void resplitMessages() {
@@ -96,6 +85,16 @@ public class ShaderMessageOverlay extends CustomOverlay {
             List<FormattedCharSequence> wrapped = ComponentRenderUtils.wrapComponents(message, lineWidth, Minecraft.getInstance().font);
             this.splitMessageLines.addAll(wrapped);
         }
+    }
+
+    public void clear() {
+        this.splitMessageLines.clear();
+        this.rawMessages.clear();
+        this.currentScrollIndex = 0;
+    }
+
+    public void setRemoveAllAfterTicks(int ticks) {
+        this.removeAllAtAge = this.age + ticks;
     }
 
     private boolean isHoveringScrollBox(double mouseX, double mouseY) {

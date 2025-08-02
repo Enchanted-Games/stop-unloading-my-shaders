@@ -65,23 +65,25 @@ public abstract class ShaderReloadManager {
     }
 
     public static void showMessage(Component message) {
-        showMessage(message, 0);
+        showMessage(message, -1);
     }
 
     /**
      * Shows a message to the shader message overlay and/or Minecraft chat.
      *
      * @param message      the message
-     * @param ticksVisible ticks this message is visible for, only applies in
-     *                     the shader message overlay. Set to 0 for always visible
+     * @param ticksVisible clears message after x ticks, if set will add this message as the first one.
+     *                     Set to -1 to add a message normally. Only applies to the shader message
+     *                     overlay
      */
     public static void showMessage(Component message, int ticksVisible) {
 //        Minecraft.getInstance().gui.getChat().addMessage(message);
         if(ticksVisible > 0) {
-            CustomOverlayManager.SHADER_MESSAGE_OVERLAY.addTimedMessage(message, ticksVisible);
-        } else {
-            CustomOverlayManager.SHADER_MESSAGE_OVERLAY.addMessage(message);
+            CustomOverlayManager.SHADER_MESSAGE_OVERLAY.addPinnedMessage(message, ticksVisible);
+            return;
         }
+        CustomOverlayManager.SHADER_MESSAGE_OVERLAY.addMessage(message);
+        CustomOverlayManager.SHADER_MESSAGE_OVERLAY.setRemoveAllAfterTicks(isHotReloading ? 1800 : 600);
     }
 
     private static void clearKnownErrors() {
