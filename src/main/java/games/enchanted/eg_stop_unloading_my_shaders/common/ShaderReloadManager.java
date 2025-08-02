@@ -1,5 +1,6 @@
 package games.enchanted.eg_stop_unloading_my_shaders.common;
 
+import games.enchanted.eg_stop_unloading_my_shaders.common.config.ConfigManager;
 import games.enchanted.eg_stop_unloading_my_shaders.common.screen.CustomOverlayManager;
 import games.enchanted.eg_stop_unloading_my_shaders.common.translations.Messages;
 import net.minecraft.Util;
@@ -77,13 +78,16 @@ public abstract class ShaderReloadManager {
      *                     overlay
      */
     public static void showMessage(Component message, int ticksVisible) {
-//        Minecraft.getInstance().gui.getChat().addMessage(message);
+        if(ConfigManager.LOGGING_MODE.showInChat()) {
+            Minecraft.getInstance().gui.getChat().addMessage(message);
+        }
+        if(!ConfigManager.LOGGING_MODE.showInBox()) return;
         if(ticksVisible > 0) {
             CustomOverlayManager.SHADER_MESSAGE_OVERLAY.addPinnedMessage(message, ticksVisible);
             return;
         }
         CustomOverlayManager.SHADER_MESSAGE_OVERLAY.addMessage(message);
-        CustomOverlayManager.SHADER_MESSAGE_OVERLAY.setRemoveAllAfterTicks(isHotReloading ? 1800 : 600);
+        CustomOverlayManager.SHADER_MESSAGE_OVERLAY.setRemoveAllAfterTicks(isHotReloading ? 2400 : 1200);
     }
 
     private static void clearKnownErrors() {

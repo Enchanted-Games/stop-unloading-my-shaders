@@ -14,13 +14,16 @@
   },
   "license": "${license}",
   "icon": "${icon}",
-  "environment": "*",
+  "environment": "client",
   "entrypoints": {
     "main": [
       "${fabric_common_entry}"
     ],
     "client": [
       "${fabric_client_entry}"
+    ],
+    "modmenu": [
+      "games.enchanted.eg_stop_unloading_my_shaders.fabric.ModMenuIntegration"
     ]
   },
 ${mixin_field}

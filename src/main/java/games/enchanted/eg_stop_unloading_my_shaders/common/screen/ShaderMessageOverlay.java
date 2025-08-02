@@ -11,13 +11,13 @@ import net.minecraft.util.FormattedCharSequence;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class ShaderMessageOverlay extends CustomOverlay {
     private static final int PADDING_BLOCK = 6;
     private static final int PADDING_INLINE = 4;
     private static final ResourceLocation LINE_BACKGROUND_LOCATION = ResourceLocation.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/line_background");
     private static final ResourceLocation LINE_BACKGROUND_HOVER_LOCATION = ResourceLocation.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/line_background_hover");
+    private static final int ARROW_SIZE = 6;
     private static final ResourceLocation ARROW_DOWN_LOCATION = ResourceLocation.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/arrow_down");
     private static final ResourceLocation ARROW_UP_LOCATION = ResourceLocation.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/arrow_up");
 
@@ -31,7 +31,7 @@ public class ShaderMessageOverlay extends CustomOverlay {
     private final float scale = 1.0f;
     private final int lineWidth = 320;
     private final int lineHeight = 9;
-    private final int visibleLines = 7;
+    private final int visibleLines = 9;
 
     private int age = 0;
 
@@ -94,16 +94,18 @@ public class ShaderMessageOverlay extends CustomOverlay {
     }
 
     public void setRemoveAllAfterTicks(int ticks) {
-        this.removeAllAtAge = this.age + ticks;
+        int newRemoveAtAge = this.age + ticks;
+        if(newRemoveAtAge > this.removeAllAtAge) this.removeAllAtAge = newRemoveAtAge;
     }
 
     private boolean isHoveringScrollBox(double mouseX, double mouseY) {
         if(mouseX > this.lineWidth + (PADDING_INLINE * 2)) return false;
-        return !(mouseY > (this.lineHeight * this.visibleLines) + (PADDING_BLOCK * 2));
+        return !(mouseY > (this.lineHeight * Math.min(this.visibleLines, this.splitMessageLines.size())) + (PADDING_BLOCK * 2));
     }
 
     @Override
     public boolean onScroll(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if(this.splitMessageLines.isEmpty()) return false;
         if(!isHoveringScrollBox(mouseX, mouseY)) return false;
         scrollByLines((int) Math.clamp(scrollY * -1, -1.0, 1.0));
         return true;
@@ -113,24 +115,27 @@ public class ShaderMessageOverlay extends CustomOverlay {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         if(this.splitMessageLines.isEmpty()) return;
         int linesToRender = Math.min(this.splitMessageLines.size() - this.currentScrollIndex, visibleLines);
+        int width = lineWidth + (PADDING_INLINE * 2);
+
+        guiGraphics.pose().pushMatrix();
+        guiGraphics.pose().scale(this.scale);
+
         for (int i = 0; i < linesToRender; i++) {
-            boolean isLast = i == linesToRender - 1;
-            boolean isFirst = i == 0;
+            boolean isLastVisible = i == linesToRender - 1;
+            boolean isFirstVisible = i == 0;
             int x = PADDING_INLINE;
             int y = PADDING_BLOCK + (i * lineHeight);
-            int width = lineWidth + (PADDING_INLINE * 2);
-            int height = isLast ? lineHeight + PADDING_BLOCK : lineHeight;
+            int height = isLastVisible ? lineHeight + PADDING_BLOCK : lineHeight;
 
-            guiGraphics.pose().pushMatrix();
-            guiGraphics.pose().scale(this.scale);
+
 
             guiGraphics.blitSprite(
                 RenderPipelines.GUI_TEXTURED,
                 isHoveringScrollBox(mouseX, mouseY) ? LINE_BACKGROUND_HOVER_LOCATION : LINE_BACKGROUND_LOCATION,
                 0,
-                isFirst ? 0 : y,
+                isFirstVisible ? 0 : y,
                 width,
-                isFirst ? y + height : height
+                isFirstVisible ? y + height : height
             );
             guiGraphics.drawString(
                 Minecraft.getInstance().font,
@@ -140,7 +145,33 @@ public class ShaderMessageOverlay extends CustomOverlay {
                 -1
             );
 
-            guiGraphics.pose().popMatrix();
         }
+
+        boolean isAtTop = this.currentScrollIndex == 0;
+        boolean isAtBottom = this.currentScrollIndex >= this.splitMessageLines.size() - this.visibleLines;
+
+        if(!isAtTop) {
+            guiGraphics.blitSprite(
+                RenderPipelines.GUI_TEXTURED,
+                ARROW_UP_LOCATION,
+                width / 2 - ARROW_SIZE / 2,
+                0,
+                ARROW_SIZE,
+                ARROW_SIZE
+            );
+        }
+
+        if(!isAtBottom) {
+            guiGraphics.blitSprite(
+                RenderPipelines.GUI_TEXTURED,
+                ARROW_DOWN_LOCATION,
+                width / 2 - ARROW_SIZE / 2,
+                linesToRender * lineHeight + PADDING_BLOCK,
+                ARROW_SIZE,
+                ARROW_SIZE
+            );
+        }
+
+        guiGraphics.pose().popMatrix();
     }
 }

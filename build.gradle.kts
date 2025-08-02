@@ -15,6 +15,11 @@ plugins {
 
 // Leave this alone unless adding more dependencies.
 repositories {
+    // modmenu
+    maven("https://maven.terraformersmc.com/") {
+        name = "Terraformers"
+    }
+
     mavenCentral()
     exclusiveContent {
         forRepository { maven("https://www.cursemaven.com") { name = "CurseForge" } }
@@ -219,6 +224,11 @@ class APISource(val type: DepType, val modInfo: APIModInfo, val mavenLocation: S
 // add any hardcoded apis here. Hardcoded APIs should be used in most if not all your versions.
 val apis = arrayListOf(
     APISource(DepType.API, APIModInfo(if(env.atMost("1.16.5")) "fabric" else "fabric-api","fabric-api"), "net.fabricmc.fabric-api:fabric-api",optionalVersionProperty("deps.api.fabric"))
+    { src ->
+        src.versionRange.isPresent && env.isFabric
+    },
+
+    APISource(DepType.API_OPTIONAL, APIModInfo("modmenu"), "com.terraformersmc:modmenu",optionalVersionProperty("deps.api.modmenu"))
     { src ->
         src.versionRange.isPresent && env.isFabric
     }

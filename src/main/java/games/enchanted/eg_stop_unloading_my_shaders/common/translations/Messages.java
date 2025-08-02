@@ -11,6 +11,10 @@ public class Messages {
         return Component.empty().append(messagePrefix.getAsComponent()).append(CommonComponents.SPACE).append(message);
     }
 
+    public static Component translateWithFallback(String key, Component value, String fallback) {
+        return Component.translatableWithFallback(key, fallback, value.getString());
+    }
+
     public static Component getReloadingShadersMessage() {
         return appendMessagePrefix(Messages.MessagePrefix.INFO, Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.reloading_shaders", "_Reloading shaders"));
     }

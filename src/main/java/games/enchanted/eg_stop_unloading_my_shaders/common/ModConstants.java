@@ -9,6 +9,13 @@ import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.InactiveProfiler;
 
+//? if fabric {
+import net.fabricmc.loader.api.FabricLoader;
+//?} else {
+/*import net.neoforged.fml.loading.FMLPaths;
+*///?}
+
+import java.nio.file.Path;
 import java.util.List;
 
 public class ModConstants {
@@ -32,5 +39,16 @@ public class ModConstants {
         ResourceManager resourceManager = new MultiPackResourceManager(PackType.CLIENT_RESOURCES, List.of(vanillaPack));
         vanillaShaderConfigs = ((ShaderManagerAccessor) Minecraft.getInstance().getShaderManager()).eg_sumr$invokePrepare(resourceManager, InactiveProfiler.INSTANCE);
         return vanillaShaderConfigs;
+    }
+
+    /**
+     * Returns the path where configuration files are stored within the .minecraft directory
+     */
+    public static Path getConfigPath() {
+        //? if fabric {
+        return FabricLoader.getInstance().getConfigDir();
+        //?} else {
+        /*return FMLPaths.CONFIGDIR.get();
+         *///?}
     }
 }

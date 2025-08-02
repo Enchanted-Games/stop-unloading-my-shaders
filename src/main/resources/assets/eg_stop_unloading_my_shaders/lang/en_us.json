@@ -11,5 +11,17 @@
   "debug.eg_stop_unloading_my_shaders.no_source_error": "Couldn't find source for %s shader: %s",
   "debug.eg_stop_unloading_my_shaders.compilation_error": "Couldn't compile %s shader: %s",
 
-  "debug.eg_stop_unloading_my_shaders.no_full_error": "Couldn't get full error message"
+  "debug.eg_stop_unloading_my_shaders.no_full_error": "Couldn't get full error message",
+
+  "gui.eg_stop_unloading_my_shaders.button.log_mode": "Log messages to: %s",
+  "gui.eg_stop_unloading_my_shaders.button.log_mode.tooltip": "Box: Logs messages to a box in the top left of the screen, visible everywhere.\nChat: Logs messages to the in-game chat, only visible in a world.\nBoth: Logs messages to the box and chat",
+
+  "gui.eg_stop_unloading_my_shaders.config.title": "Stop Unloading My Resourcepacks Config",
+  "config.eg_stop_unloading_my_shaders.log_mode.box": "Box",
+  "config.eg_stop_unloading_my_shaders.log_mode.chat": "Chat",
+  "config.eg_stop_unloading_my_shaders.log_mode.both": "Both",
+
+  "config.eg_stop_unloading_my_shaders.couldnt_open_file": "Couldn't open config file: %s",
+  "config.eg_stop_unloading_my_shaders.couldnt_save_file": "Couldn't save config file: %s",
+  "config.eg_stop_unloading_my_shaders.couldnt_parse_file_prop": "Couldn't parse config property: %s"
 }
