@@ -19,7 +19,7 @@ import java.util.Properties;
 public class ConfigManager {
     public static ErrorLoggingMode LOGGING_MODE = ErrorLoggingMode.BOX;
 
-    private static String CONFIG_FILE_NAME = "eg_stop_unloading_my_shaders.properties";
+    private static final String CONFIG_FILE_NAME = "eg_stop_unloading_my_shaders.properties";
 
     private static Path getConfigFilePath() {
         return ModConstants.getConfigPath().resolve(CONFIG_FILE_NAME);
@@ -50,6 +50,7 @@ public class ConfigManager {
                 LOGGING_MODE = result.getOrThrow().getFirst();
             }
         }
+        saveFile();
     }
 
     public static boolean saveFile() {
