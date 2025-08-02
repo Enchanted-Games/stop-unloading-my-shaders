@@ -22,4 +22,12 @@ public class CustomOverlayManager implements Renderable, Tickable {
     public void tick() {
         customOverlays.forEach(Tickable::tick);
     }
+
+    public boolean scrollOverlays(double mouseX, double mouseY, double scrollX, double scrollY) {
+        for (CustomOverlay customOverlay : customOverlays) {
+            boolean shouldCancel = customOverlay.onScroll(mouseX, mouseY, scrollX, scrollY);
+            if (shouldCancel) return true;
+        }
+        return false;
+    }
 }

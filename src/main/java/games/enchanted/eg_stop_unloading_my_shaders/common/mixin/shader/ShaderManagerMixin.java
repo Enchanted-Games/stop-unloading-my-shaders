@@ -19,23 +19,24 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ShaderManager.class)
 public class ShaderManagerMixin {
+    @Inject(
+        at = @At("HEAD"),
+        method = "prepare(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)Lnet/minecraft/client/renderer/ShaderManager$Configs;"
+    )
+    private void eg_sumr$onShaderManagerStart(ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfoReturnable<ShaderManager.Configs> cir) {
+        ShaderReloadManager.startedVanillaReload();
+    }
+
     @Inject(
         at = @At("RETURN"),
         method = "apply(Lnet/minecraft/client/renderer/ShaderManager$Configs;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V"
     )
     private void eg_sumr$onShaderManagerFinish(ShaderManager.Configs object, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
         ShaderReloadManager.finishedVanillaReload();
-    }
-
-    @Inject(
-        at = @At("HEAD"),
-        method = "apply(Lnet/minecraft/client/renderer/ShaderManager$Configs;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V"
-    )
-    private void eg_sumr$onShaderManagerStart(ShaderManager.Configs object, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
-        ShaderReloadManager.startedVanillaReload();
     }
 
     // ResourceLocation local is the result of POST_CHAIN_ID_CONVERTER.fileToId
