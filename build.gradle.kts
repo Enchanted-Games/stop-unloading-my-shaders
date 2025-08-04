@@ -140,6 +140,7 @@ class Env {
     val parchmentMappingVersion = property("deps.parchment.version")
 
     val loader = property("loom.platform").toString()
+    val loaderPublishingPrefix = if (loader == "fabric") "Fabric" else if (loader == "neoforge") "NF" else "Unknown";
     val isFabric = loader == "fabric"
     val isNeo = loader == "neoforge"
     val isCommon = project.parent!!.name == "common"
@@ -596,10 +597,10 @@ tasks.processResources {
 }
 
 //TODO: Enable auto-publishing.
-/*publishMods {
+publishMods {
     file = tasks.remapJar.get().archiveFile
     additionalFiles.from(tasks.remapSourcesJar.get().archiveFile)
-    displayName = "${mod.displayName} ${mod.version} for ${env.mcVersion.min}"
+    displayName = "[${env.loaderPublishingPrefix}] v${mod.version} for mc ${env.mcVersion.min}"
     version = mod.version
     changelog = rootProject.file("CHANGELOG.md").readText()
     type = STABLE
@@ -635,36 +636,36 @@ tasks.processResources {
         }
     }
 
-    curseforge {
-        projectId = modPublish.curseforgeProjectToken
-        // Get one here: https://legacy.curseforge.com/account/api-tokens
-        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
-        minecraftVersions.addAll(modPublish.mcTargets)
-        apis.forEach{ src ->
-            if(src.enabled) src.versionRange.ifPresent{ ver ->
-                if(src.type.isOptional()){
-                    src.modInfo.curseSlug?.let {
-                        optional {
-                            slug = it
-                            version = ver.min
-
-                        }
-                    }
-                }
-                else{
-                    src.modInfo.curseSlug?.let {
-                        requires {
-                            slug = it
-                            version = ver.min
-                        }
-                    }
-                }
-            }
-        }
-    }
+//    curseforge {
+//        projectId = modPublish.curseforgeProjectToken
+//        // Get one here: https://legacy.curseforge.com/account/api-tokens
+//        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
+//        minecraftVersions.addAll(modPublish.mcTargets)
+//        apis.forEach{ src ->
+//            if(src.enabled) src.versionRange.ifPresent{ ver ->
+//                if(src.type.isOptional()){
+//                    src.modInfo.curseSlug?.let {
+//                        optional {
+//                            slug = it
+//                            version = ver.min
+//
+//                        }
+//                    }
+//                }
+//                else{
+//                    src.modInfo.curseSlug?.let {
+//                        requires {
+//                            slug = it
+//                            version = ver.min
+//                        }
+//                    }
+//                }
+//            }
+//        }
+//    }
 }
 // TODO Disable if not uploading to a maven
-publishing {
+/*publishing {
     repositories {
         // TODO this is an example of how I recommend you do this.
         if(modPublish.mavenURL.isPresent) {
