@@ -11,7 +11,7 @@
     "CustomOverlayTickerMixin",
     "accessor.ShaderManagerAccessor",
     "shader.CompilationCacheMixin",
-    "shader.KeyboardHandlerMixin",
+    "KeyboardHandlerMixin",
     "shader.ShaderManagerMixin",
     "shader.ShaderManagerPreprocessorMixin",
     "shader.gl.GlDeviceMixin"

@@ -1,4 +1,4 @@
-package games.enchanted.eg_stop_unloading_my_shaders.common.mixin.shader;
+package games.enchanted.eg_stop_unloading_my_shaders.common.mixin;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import games.enchanted.eg_stop_unloading_my_shaders.common.ModEntry;
@@ -40,11 +40,13 @@ public abstract class KeyboardHandlerMixin {
 
     @Inject(
         at = @At("RETURN"),
-        method = "handleDebugKeys"
+        method = "handleDebugKeys",
+        cancellable = true
     )
     private void eg_sumr$addReloadShadersKey(int key, CallbackInfoReturnable<Boolean> cir) {
         if(key == GLFW.GLFW_KEY_R) {
             ShaderReloadManager.triggerReload();
+            cir.setReturnValue(true);
         }
     }
 }
