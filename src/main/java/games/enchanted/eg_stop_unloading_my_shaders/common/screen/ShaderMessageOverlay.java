@@ -68,7 +68,7 @@ public class ShaderMessageOverlay extends CustomOverlay {
     public void tick() {
         super.tick();
         this.age++;
-        if(this.removePinnedAtAge > -1 && this.age > this.removePinnedAtAge) {
+        if(this.removePinnedAtAge > -1 && this.age > this.removePinnedAtAge && !this.rawMessages.isEmpty()) {
             this.rawMessages.removeFirst();
             resplitMessages();
             this.removePinnedAtAge = -1;
@@ -107,7 +107,7 @@ public class ShaderMessageOverlay extends CustomOverlay {
     public boolean onScroll(double mouseX, double mouseY, double scrollX, double scrollY) {
         if(this.splitMessageLines.isEmpty()) return false;
         if(!isHoveringScrollBox(mouseX, mouseY)) return false;
-        scrollByLines((int) Math.clamp(scrollY * -1, -1.0, 1.0));
+        scrollByLines((int) Math.clamp(scrollY * -1.0, -1.0, 1.0));
         return true;
     }
 
