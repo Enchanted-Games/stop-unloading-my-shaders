@@ -135,7 +135,8 @@ enum class EnvType {
 class Env {
     val archivesBaseName = property("archives_base_name").toString()
 
-    val mcVersion = versionProperty("deps.core.mc.version_range")
+    val mcVersionCompileTarget = versionProperty("deps.core.mc.version_range")
+    val mcVersionCompatibleRange = versionProperty("deps.core.mc.compatible_range")
     val parchmentMcVersion = versionProperty("deps.parchment.mc_version")
     val parchmentMappingVersion = property("deps.parchment.version")
 
@@ -155,10 +156,10 @@ class Env {
     // The modloader system is separate from the API in Neo
     val neoforgeLoaderVersion = versionProperty("deps.core.neoforge.loader.version_range")
 
-    fun atLeast(version: String) = stonecutter.compare(mcVersion.min, version) >= 0
-    fun atMost(version: String) = stonecutter.compare(mcVersion.min, version) <= 0
-    fun isNot(version: String) = stonecutter.compare(mcVersion.min, version) != 0
-    fun isExact(version: String) = stonecutter.compare(mcVersion.min, version) == 0
+    fun atLeast(version: String) = stonecutter.compare(mcVersionCompileTarget.min, version) >= 0
+    fun atMost(version: String) = stonecutter.compare(mcVersionCompileTarget.min, version) <= 0
+    fun isNot(version: String) = stonecutter.compare(mcVersionCompileTarget.min, version) != 0
+    fun isExact(version: String) = stonecutter.compare(mcVersionCompileTarget.min, version) == 0
 
     private fun extractForgeVer(str: String) : String {
         val split = str.split("-")
@@ -304,7 +305,7 @@ class ModPublish {
     init {
         val tempmcTargets = listProperty("publish_acceptable_mc_versions")
         if(tempmcTargets.isEmpty()){
-            mcTargets.add(env.mcVersion.min)
+            mcTargets.add(env.mcVersionCompatibleRange.min)
         }
         else{
             mcTargets.addAll(tempmcTargets)
@@ -336,7 +337,7 @@ class ModDependencies {
     }
 
     fun forEachRequired(cons: BiConsumer<String,VersionRange>){
-        cons.accept("minecraft",env.mcVersion)
+        cons.accept("minecraft",env.mcVersionCompatibleRange)
         if (env.isNeo){
             cons.accept("neoforge", env.neoforgeVersion)
         }
@@ -439,7 +440,7 @@ val modMixins = ModMixins()
 val dynamics = SpecialMultiversionedConstants()
 
 // Upload version format
-version = "v${mod.version}-${env.loader}-mc${env.mcVersion.min}"
+version = "v${mod.version}-${env.loader}-mc${env.mcVersionCompileTarget.min}"
 group = property("group").toString()
 
 // Adds both optional and required dependencies to stonecutter version checking.
@@ -482,7 +483,7 @@ loom {
 base { archivesName.set(env.archivesBaseName) }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${env.mcVersion.min}")
+    minecraft("com.mojang:minecraft:${env.mcVersionCompileTarget.min}")
     mappings(
         loom.layered {
             officialMojangMappings()
@@ -571,8 +572,8 @@ tasks.processResources {
         "icon" to mod.icon,
         "fabric_common_entry" to modFabric.commonEntry,
         "fabric_client_entry" to modFabric.clientEntry,
-        "mc_min" to env.mcVersion.min,
-        "mc_max" to env.mcVersion.max,
+        "mc_min" to env.mcVersionCompileTarget.min,
+        "mc_max" to env.mcVersionCompileTarget.max,
         "issue_tracker" to mod.issueTracker,
         "java_ver" to env.javaVer.toString(),
         "forgelike_loader_ver" to dynamics.forgelikeLoaderVer,
@@ -600,7 +601,7 @@ tasks.processResources {
 publishMods {
     file = tasks.remapJar.get().archiveFile
     additionalFiles.from(tasks.remapSourcesJar.get().archiveFile)
-    displayName = "[${env.loaderPublishingPrefix}] v${mod.version} for mc ${env.mcVersion.min}"
+    displayName = "[${env.loaderPublishingPrefix}] v${mod.version} for mc ${env.mcVersionCompileTarget.min}"
     version = mod.version
     changelog = rootProject.file("CHANGELOG.md").readText()
     type = STABLE

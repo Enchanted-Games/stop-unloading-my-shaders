@@ -1,2 +1,3 @@
-# 1.0.2
-- Using the shader reload keybind (F3 + R) will no longer incorrectly display the F3 screen
+# 1.0.3
+- Fixed a crash that could happen when pressing the reload shaders keybind at just the right time
+- Allowed the mod to load on 1.21.6 or higher
