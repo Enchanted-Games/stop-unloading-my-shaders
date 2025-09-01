@@ -21,6 +21,7 @@ public class ShaderMessageOverlay extends CustomOverlay {
     private static final ResourceLocation ARROW_DOWN_LOCATION = ResourceLocation.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/arrow_down");
     private static final ResourceLocation ARROW_UP_LOCATION = ResourceLocation.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/arrow_up");
 
+    private boolean isClearing = false;
     private int removePinnedAtAge = -1;
     private int removeAllAtAge = -1;
     private final ArrayList<Component> rawMessages = new ArrayList<>();
@@ -68,7 +69,7 @@ public class ShaderMessageOverlay extends CustomOverlay {
     public void tick() {
         super.tick();
         this.age++;
-        if(this.removePinnedAtAge > -1 && this.age > this.removePinnedAtAge && !this.rawMessages.isEmpty()) {
+        if(this.removePinnedAtAge > -1 && this.age > this.removePinnedAtAge && !this.rawMessages.isEmpty() && !this.isClearing) {
             this.rawMessages.removeFirst();
             resplitMessages();
             this.removePinnedAtAge = -1;
@@ -88,9 +89,11 @@ public class ShaderMessageOverlay extends CustomOverlay {
     }
 
     public void clear() {
+        this.isClearing = true;
         this.splitMessageLines.clear();
         this.rawMessages.clear();
         this.currentScrollIndex = 0;
+        this.isClearing = false;
     }
 
     public void setRemoveAllAfterTicks(int ticks) {
@@ -126,8 +129,6 @@ public class ShaderMessageOverlay extends CustomOverlay {
             int x = PADDING_INLINE;
             int y = PADDING_BLOCK + (i * lineHeight);
             int height = isLastVisible ? lineHeight + PADDING_BLOCK : lineHeight;
-
-
 
             guiGraphics.blitSprite(
                 RenderPipelines.GUI_TEXTURED,
