@@ -55,9 +55,9 @@ public class ConfigScreen extends Screen {
         );
 
         contentsFlow.addChild(
-            Button.builder(Messages.translateWithFallback(DISABLE_LINKER_LOGS_KEY, ConfigManager.disableLinkerLogs ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF, DISABLE_LINKER_LOGS_FALBACK), (widget) -> {
+            Button.builder(Messages.translateWithFallback(DISABLE_LINKER_LOGS_KEY, getToggledComponent(CommonComponents.OPTION_ON, CommonComponents.OPTION_OFF, ConfigManager.disableLinkerLogs), DISABLE_LINKER_LOGS_FALBACK), (widget) -> {
                     ConfigManager.disableLinkerLogs = !ConfigManager.disableLinkerLogs;
-                    widget.setMessage(Messages.translateWithFallback(DISABLE_LINKER_LOGS_KEY, ConfigManager.disableLinkerLogs ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF, DISABLE_LINKER_LOGS_FALBACK));
+                    widget.setMessage(Messages.translateWithFallback(DISABLE_LINKER_LOGS_KEY, getToggledComponent(CommonComponents.OPTION_ON, CommonComponents.OPTION_OFF, ConfigManager.disableLinkerLogs), DISABLE_LINKER_LOGS_FALBACK));
                     ConfigManager.saveFile();
                 })
                 .tooltip(Tooltip.create(Component.translatable(DISABLE_LINKER_LOGS_KEY + ".tooltip")))
@@ -82,6 +82,7 @@ public class ConfigScreen extends Screen {
 
     @Override
     public void onClose() {
+        ConfigManager.logCurrentConfig();
         assert this.minecraft != null;
         this.minecraft.setScreen(parent);
     }

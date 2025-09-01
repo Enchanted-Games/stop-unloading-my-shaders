@@ -59,14 +59,7 @@ public class ConfigManager {
 
         String disableLinkerLogs = modProperties.getProperty(LINKER_LOGS_KEY);
         if(disableLinkerLogs != null) {
-            DataResult<Pair<Boolean, Object>> result = Codec.BOOL.decode(JavaOps.INSTANCE, loggingMode);
-            if(result.error().isPresent()) {
-                ShaderReloadManager.showErrorMessage(Component.translatableWithFallback("config.eg_stop_unloading_my_shaders.couldnt_parse_file_prop", "_Couldn't parse config property: %s", LINKER_LOGS_KEY));
-                ShaderReloadManager.showContinuationErrorMessage(Component.literal(result.error().get().message()));
-                Logging.error(result.error().get().message());
-            } else {
-                ConfigManager.disableLinkerLogs = result.getOrThrow().getFirst();
-            }
+            ConfigManager.disableLinkerLogs = Boolean.parseBoolean(disableLinkerLogs);
         }
         saveFile();
     }
@@ -90,7 +83,15 @@ public class ConfigManager {
         return true;
     }
 
+    public static void logCurrentConfig() {
+        StringBuilder builder = new StringBuilder("Current Config Values:");
+        builder.append("\n").append(LOGGING_MODE_KEY).append(": ").append(loggingMode.getSerializedName());
+        builder.append("\n").append(LINKER_LOGS_KEY).append(": ").append(disableLinkerLogs);
+        Logging.info(builder.toString());
+    }
+
     static {
         loadFromFile();
+        logCurrentConfig();
     }
 }
