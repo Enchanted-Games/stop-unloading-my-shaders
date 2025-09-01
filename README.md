@@ -21,3 +21,5 @@ For minecrafts builtin shaders, the mod will attempt to load the default ones as
 - Shader hot-reload keybind (F3 + R) which just reloads shaders, much quicker than a full resource reload
    - Works in the title screen, not just when in a world!
 - Adds better errors for some things. For example, when importing a non-existent include shader the gane will produce a proper error rather than throwing a null pointer exception
+- Added an option to disable shader linker info logs
+    - Off by default but can be enabled if it causes a ton of log spam (like it does on my machine)
