@@ -12,6 +12,7 @@ modId="${id}"
 version="${version}"
 displayName="${name}"
 logoFile="${icon}"
+logoBlur=false
 authors="${authors}"
 description='''
 ${description}
