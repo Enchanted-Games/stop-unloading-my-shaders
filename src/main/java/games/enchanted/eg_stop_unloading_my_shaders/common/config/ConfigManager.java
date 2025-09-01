@@ -1,6 +1,7 @@
 package games.enchanted.eg_stop_unloading_my_shaders.common.config;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JavaOps;
 import games.enchanted.eg_stop_unloading_my_shaders.common.Logging;
@@ -17,7 +18,11 @@ import java.util.Arrays;
 import java.util.Properties;
 
 public class ConfigManager {
-    public static ErrorLoggingMode LOGGING_MODE = ErrorLoggingMode.BOX;
+    private static final String LOGGING_MODE_KEY = "logging_mode";
+    public static ErrorLoggingMode loggingMode = ErrorLoggingMode.BOX;
+
+    private static final String LINKER_LOGS_KEY = "disable_linker_logs";
+    public static boolean disableLinkerLogs = false;
 
     private static final String CONFIG_FILE_NAME = "eg_stop_unloading_my_shaders.properties";
 
@@ -39,15 +44,28 @@ public class ConfigManager {
             }
         }
 
-        String loggingMode = modProperties.getProperty("logging_mode");
+        String loggingMode = modProperties.getProperty(LOGGING_MODE_KEY);
         if(loggingMode != null) {
             DataResult<Pair<ErrorLoggingMode, Object>> result = StringRepresentable.fromValues(ErrorLoggingMode::values).decode(JavaOps.INSTANCE, loggingMode);
             if(result.error().isPresent()) {
-                ShaderReloadManager.showErrorMessage(Component.translatableWithFallback("config.eg_stop_unloading_my_shaders.couldnt_parse_file_prop", "_Couldn't parse config property: %s", "logging_mode"));
+                ShaderReloadManager.showErrorMessage(Component.translatableWithFallback("config.eg_stop_unloading_my_shaders.couldnt_parse_file_prop", "_Couldn't parse config property: %s", LOGGING_MODE_KEY));
                 ShaderReloadManager.showContinuationErrorMessage(Component.literal(result.error().get().message()));
                 Logging.error(result.error().get().message());
             } else {
-                LOGGING_MODE = result.getOrThrow().getFirst();
+                ConfigManager.loggingMode = result.getOrThrow().getFirst();
+            }
+        }
+
+
+        String disableLinkerLogs = modProperties.getProperty(LINKER_LOGS_KEY);
+        if(disableLinkerLogs != null) {
+            DataResult<Pair<Boolean, Object>> result = Codec.BOOL.decode(JavaOps.INSTANCE, loggingMode);
+            if(result.error().isPresent()) {
+                ShaderReloadManager.showErrorMessage(Component.translatableWithFallback("config.eg_stop_unloading_my_shaders.couldnt_parse_file_prop", "_Couldn't parse config property: %s", LINKER_LOGS_KEY));
+                ShaderReloadManager.showContinuationErrorMessage(Component.literal(result.error().get().message()));
+                Logging.error(result.error().get().message());
+            } else {
+                ConfigManager.disableLinkerLogs = result.getOrThrow().getFirst();
             }
         }
         saveFile();
@@ -56,10 +74,11 @@ public class ConfigManager {
     public static boolean saveFile() {
         Properties modProperties = new Properties();
 
-        modProperties.setProperty("logging_mode", LOGGING_MODE.getSerializedName());
+        modProperties.setProperty(LOGGING_MODE_KEY, loggingMode.getSerializedName());
+        modProperties.setProperty(LINKER_LOGS_KEY, disableLinkerLogs ? "true" : "false");
 
         try {
-            modProperties.store(new FileWriter(getConfigFilePath().toFile()), "store to properties file");
+            modProperties.store(new FileWriter(getConfigFilePath().toFile()), "Stop Unloading My Resourcepacks Config");
         } catch (IOException e) {
             ShaderReloadManager.showErrorMessage(Component.translatableWithFallback("config.eg_stop_unloading_my_shaders.couldnt_save_file", "_Couldn't save config file: %s", CONFIG_FILE_NAME));
             ShaderReloadManager.showContinuationErrorMessage(Component.literal(e.getMessage()));

@@ -14,6 +14,8 @@ public class ConfigScreen extends Screen {
     private static final Component TITLE = Component.translatableWithFallback("gui.eg_stop_unloading_my_shaders.config.title", "Stop Unloading My Resourcepacks Config").withStyle(Style.EMPTY.withBold(true));
     private static final String LOG_MODE_KEY = "gui.eg_stop_unloading_my_shaders.button.log_mode";
     private static final String LOG_MODE_FALLBACK = "_Log messages to: %s";
+    private static final String DISABLE_LINKER_LOGS_KEY = "gui.eg_stop_unloading_my_shaders.button.disable_linker_logs";
+    private static final String DISABLE_LINKER_LOGS_FALBACK = "_Hide linker logs: %s";
 
     private final HeaderAndFooterLayout headerAndFooterLayout = new HeaderAndFooterLayout(this);
     private final LinearLayout contentsFlow = LinearLayout.vertical().spacing(8);
@@ -42,13 +44,24 @@ public class ConfigScreen extends Screen {
 
     protected void addConfigOptions() {
         contentsFlow.addChild(
-            Button.builder(Messages.translateWithFallback(LOG_MODE_KEY, ConfigManager.LOGGING_MODE.getTranslated(), LOG_MODE_FALLBACK), (widget) -> {
-                    ConfigManager.LOGGING_MODE = ErrorLoggingMode.getNext(ConfigManager.LOGGING_MODE);
-                    widget.setMessage(Messages.translateWithFallback(LOG_MODE_KEY, ConfigManager.LOGGING_MODE.getTranslated(), LOG_MODE_FALLBACK));
+            Button.builder(Messages.translateWithFallback(LOG_MODE_KEY, ConfigManager.loggingMode.getTranslated(), LOG_MODE_FALLBACK), (widget) -> {
+                    ConfigManager.loggingMode = ErrorLoggingMode.getNext(ConfigManager.loggingMode);
+                    widget.setMessage(Messages.translateWithFallback(LOG_MODE_KEY, ConfigManager.loggingMode.getTranslated(), LOG_MODE_FALLBACK));
                     ConfigManager.saveFile();
                 })
                 .tooltip(Tooltip.create(Component.translatable(LOG_MODE_KEY + ".tooltip")))
                 .bounds(this.width / 2 - (Button.BIG_WIDTH / 2), this.height / 2 - 20 - (Button.DEFAULT_HEIGHT + 4), Button.BIG_WIDTH, Button.DEFAULT_HEIGHT)
+                .build()
+        );
+
+        contentsFlow.addChild(
+            Button.builder(Messages.translateWithFallback(DISABLE_LINKER_LOGS_KEY, ConfigManager.disableLinkerLogs ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF, DISABLE_LINKER_LOGS_FALBACK), (widget) -> {
+                    ConfigManager.disableLinkerLogs = !ConfigManager.disableLinkerLogs;
+                    widget.setMessage(Messages.translateWithFallback(DISABLE_LINKER_LOGS_KEY, ConfigManager.disableLinkerLogs ? CommonComponents.OPTION_ON : CommonComponents.OPTION_OFF, DISABLE_LINKER_LOGS_FALBACK));
+                    ConfigManager.saveFile();
+                })
+                .tooltip(Tooltip.create(Component.translatable(DISABLE_LINKER_LOGS_KEY + ".tooltip")))
+                .bounds(this.width / 2 - (Button.BIG_WIDTH / 2), this.height / 2 - 20 - (Button.DEFAULT_HEIGHT + 3), Button.BIG_WIDTH, Button.DEFAULT_HEIGHT)
                 .build()
         );
 

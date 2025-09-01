@@ -78,10 +78,10 @@ public abstract class ShaderReloadManager {
      *                     overlay
      */
     public static void showMessage(Component message, int ticksVisible) {
-        if(ConfigManager.LOGGING_MODE.showInChat()) {
+        if(ConfigManager.loggingMode.showInChat()) {
             Minecraft.getInstance().gui.getChat().addMessage(message);
         }
-        if(!ConfigManager.LOGGING_MODE.showInBox()) return;
+        if(!ConfigManager.loggingMode.showInBox()) return;
         if(ticksVisible > 0) {
             CustomOverlayManager.SHADER_MESSAGE_OVERLAY.addPinnedMessage(message, ticksVisible);
             return;

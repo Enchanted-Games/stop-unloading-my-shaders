@@ -9,12 +9,13 @@
     "CustomOverlayRendererMixin",
     "CustomOverlayScrollerMixin",
     "CustomOverlayTickerMixin",
+    "KeyboardHandlerMixin",
     "accessor.ShaderManagerAccessor",
     "shader.CompilationCacheMixin",
-    "KeyboardHandlerMixin",
     "shader.ShaderManagerMixin",
     "shader.ShaderManagerPreprocessorMixin",
-    "shader.gl.GlDeviceMixin"
+    "shader.gl.GlDeviceMixin",
+    "shader.gl.GlProgramMixin"
   ],
   "injectors": {
     "defaultRequire": 1
