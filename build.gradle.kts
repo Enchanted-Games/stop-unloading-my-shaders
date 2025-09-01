@@ -67,11 +67,14 @@ fun optionalStrProperty(key: String) : Optional<String> {
     return Optional.of(str)
 }
 
-class VersionRange(val min: String, val max: String){
+class VersionRange(val min: String, val max: String) {
     fun asForgelike() : String{
         return "${if(min.isEmpty()) "(" else "["}${min},${max}${if(max.isEmpty()) ")" else "]"}"
     }
     fun asFabric() : String{
+        if(min.isEmpty() && max.isEmpty()) {
+            return "*"
+        }
         var out = ""
         if(min.isNotEmpty()){
             out += ">=$min"
@@ -85,6 +88,7 @@ class VersionRange(val min: String, val max: String){
         return out
     }
 }
+val wildcardVersion = VersionRange("", "");
 
 /**
  * Creates a VersionRange from a listProperty
@@ -216,8 +220,10 @@ class APIModInfo(val modid: String?, val curseSlug: String?, val rinthSlug: Stri
  * If modid is null then the API will not be declared as a dependency in uploads.
  * The enable condition determines whether the API will be used for this version.
  */
-class APISource(val type: DepType, val modInfo: APIModInfo, val mavenLocation: String, val versionRange: Optional<VersionRange>, private val enableCondition: Predicate<APISource>) {
+class APISource(val type: DepType, val modInfo: APIModInfo, val mavenLocation: String, val versionRange: Optional<VersionRange>, val dependencyVersion: Optional<VersionRange>, val enableCondition: Predicate<APISource>) {
     val enabled = this.enableCondition.test(this)
+
+    constructor(type: DepType, modInfo: APIModInfo, mavenLocation: String, versionRange: Optional<VersionRange>, enableCondition: Predicate<APISource>) : this(type, modInfo, mavenLocation, versionRange, Optional.empty(), enableCondition)
 }
 
 /**
@@ -225,15 +231,26 @@ class APISource(val type: DepType, val modInfo: APIModInfo, val mavenLocation: S
  */
 // add any hardcoded apis here. Hardcoded APIs should be used in most if not all your versions.
 val apis = arrayListOf(
-    APISource(DepType.API, APIModInfo(if(env.atMost("1.16.5")) "fabric" else "fabric-api","fabric-api"), "net.fabricmc.fabric-api:fabric-api",optionalVersionProperty("deps.api.fabric"))
-    { src ->
-        src.versionRange.isPresent && env.isFabric
-    },
+    APISource(
+        DepType.API,
+        APIModInfo(if(env.atMost("1.16.5")) "fabric" else "fabric-api","fabric-api"),
+        "net.fabricmc.fabric-api:fabric-api",
+        optionalVersionProperty("deps.api.fabric"),
+        Optional.of(wildcardVersion),
+        { src ->
+            src.versionRange.isPresent && env.isFabric
+        }
+    ),
 
-    APISource(DepType.API_OPTIONAL, APIModInfo("modmenu"), "com.terraformersmc:modmenu",optionalVersionProperty("deps.api.modmenu"))
-    { src ->
-        src.versionRange.isPresent && env.isFabric
-    }
+    APISource(
+        DepType.API_OPTIONAL,
+        APIModInfo("modmenu"),
+        "com.terraformersmc:modmenu",
+        optionalVersionProperty("deps.api.modmenu"),
+        { src ->
+            src.versionRange.isPresent && env.isFabric
+        }
+    )
 )
 
 // Stores information about the mod itself.
@@ -320,23 +337,19 @@ val modPublish = ModPublish()
 class ModDependencies {
     val loadBefore = listProperty("deps.before")
     fun forEachAfter(cons: BiConsumer<String,VersionRange>){
-        forEachRequired(cons)
-        forEachOptional(cons)
+        forEachRequired(cons, false)
+        forEachOptional(cons, false)
     }
 
     fun forEachBefore(cons: Consumer<String>){
         loadBefore.forEach(cons)
     }
 
-    fun forEachOptional(cons: BiConsumer<String,VersionRange>){
-        apis.forEach{src->
-            if(src.enabled && src.type.isOptional() && src.type.includeInDepsList()) src.versionRange.ifPresent { ver -> src.modInfo.modid?.let {
-                cons.accept(it, ver)
-            }}
-        }
+    fun forEachOptional(cons: BiConsumer<String,VersionRange>, forModMetadata: Boolean) {
+        iterateDependencies(cons, forModMetadata)
     }
 
-    fun forEachRequired(cons: BiConsumer<String,VersionRange>){
+    fun forEachRequired(cons: BiConsumer<String,VersionRange>, forModMetadata: Boolean){
         cons.accept("minecraft",env.mcVersionCompatibleRange)
         if (env.isNeo){
             cons.accept("neoforge", env.neoforgeVersion)
@@ -344,10 +357,24 @@ class ModDependencies {
         if(env.isFabric) {
             cons.accept("fabric", env.fabricLoaderVersion)
         }
+        iterateDependencies(cons, forModMetadata)
+    }
+
+    fun iterateDependencies(cons: BiConsumer<String,VersionRange>, forModMetadata: Boolean) {
         apis.forEach{src->
-            if(src.enabled && !src.type.isOptional() && src.type.includeInDepsList()) src.versionRange.ifPresent { ver -> src.modInfo.modid?.let {
-                cons.accept(it, ver)
-            }}
+            if(src.enabled && !src.type.isOptional() && src.type.includeInDepsList()) {
+                val range: Optional<VersionRange>;
+                if(forModMetadata) {
+                    if(src.dependencyVersion.isPresent) range = src.dependencyVersion else range = src.versionRange;
+                } else {
+                    range = src.versionRange
+                }
+                range.ifPresent { ver ->
+                    src.modInfo.modid?.let {
+                        cons.accept(it, ver)
+                    }
+                }
+            }
         }
     }
 }
@@ -401,14 +428,14 @@ class SpecialMultiversionedConstants {
     private fun fabricDependencyList() : String{
         var out = "  \"depends\":{"
         var useComma = false
-        dependencies.forEachRequired{modid,ver->
+        dependencies.forEachRequired({modid,ver->
             if(useComma){
                 out+=","
             }
             out+="\n"
             out+="    \"${modid}\": \"${ver.asFabric()}\""
             useComma = true
-        }
+        }, true)
         return "$out\n  }"
 
     }
@@ -417,12 +444,12 @@ class SpecialMultiversionedConstants {
         dependencies.forEachBefore{modid ->
             out += forgedep(modid,VersionRange("",""),"BEFORE",false)
         }
-        dependencies.forEachOptional{modid,ver->
+        dependencies.forEachOptional({modid,ver->
             out += forgedep(modid,ver,"AFTER",false)
-        }
-        dependencies.forEachRequired{modid,ver->
+        }, true)
+        dependencies.forEachRequired({modid,ver->
             out += forgedep(modid,ver,"AFTER",true)
-        }
+        }, true)
         return out
     }
     private fun forgedep(modid: String, versionRange: VersionRange, order: String, mandatory: Boolean) : String {
