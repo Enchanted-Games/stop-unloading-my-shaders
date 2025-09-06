@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Slice;
 
-@Mixin(value = GlProgram.class, remap = false)
+@Mixin(GlProgram.class)
 public class GlProgramMixin {
     @WrapOperation(
         slice = @Slice(
