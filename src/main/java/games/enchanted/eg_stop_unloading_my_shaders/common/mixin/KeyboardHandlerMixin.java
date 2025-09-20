@@ -1,21 +1,25 @@
 package games.enchanted.eg_stop_unloading_my_shaders.common.mixin;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import games.enchanted.eg_stop_unloading_my_shaders.common.ModEntry;
 import games.enchanted.eg_stop_unloading_my_shaders.common.ShaderReloadManager;
 import net.minecraft.client.KeyboardHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.PauseScreen;
-import net.minecraft.client.gui.screens.debug.GameModeSwitcherScreen;
-import net.minecraft.client.input.KeyEvent;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+//? if minecraft: <= 1.21.8 {
+/*import com.mojang.blaze3d.platform.InputConstants;
+import games.enchanted.eg_stop_unloading_my_shaders.common.ModEntry;
+import net.minecraft.client.gui.screens.PauseScreen;
+import net.minecraft.client.gui.screens.debug.GameModeSwitcherScreen;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+*///?} else {
+import net.minecraft.client.input.KeyEvent;
+//?}
 
 @Mixin(KeyboardHandler.class)
 public abstract class KeyboardHandlerMixin {
