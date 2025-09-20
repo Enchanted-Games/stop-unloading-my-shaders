@@ -7,6 +7,7 @@ import net.minecraft.client.KeyboardHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.debug.GameModeSwitcherScreen;
+import net.minecraft.client.input.KeyEvent;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -20,7 +21,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public abstract class KeyboardHandlerMixin {
     @Shadow @Final private Minecraft minecraft;
 
-    @Shadow protected abstract boolean handleDebugKeys(int key);
+    //? if minecraft: <= 1.21.8 {
+    /*@Shadow protected abstract boolean handleDebugKeys(int key);
 
     @Inject(
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;getWindow()Lcom/mojang/blaze3d/platform/Window;", ordinal = 0),
@@ -49,4 +51,19 @@ public abstract class KeyboardHandlerMixin {
             cir.setReturnValue(true);
         }
     }
+    *///?} else {
+
+    @Inject(
+        at = @At("RETURN"),
+        method = "handleDebugKeys",
+        cancellable = true
+    )
+    private void eg_sumr$addReloadShadersKey(KeyEvent keyEvent, CallbackInfoReturnable<Boolean> cir) {
+        if(keyEvent.key() == GLFW.GLFW_KEY_R) {
+            ShaderReloadManager.triggerReload();
+            cir.setReturnValue(true);
+        }
+    }
+
+    //? }
 }

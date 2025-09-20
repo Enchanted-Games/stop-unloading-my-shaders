@@ -152,6 +152,8 @@ class Env {
     val isApi = project.parent!!.name == "api"
     val type = if(isFabric) EnvType.FABRIC else EnvType.NEOFORGE
 
+    val modmenuEnabled = optionalVersionProperty("deps.api.modmenu").isPresent;
+
     // if MC requires higher JVMs in future updates change this controller.
     val javaVer = if(atMost("1.16.5")) 8 else if(atMost("1.20.4")) 17 else 21
 
@@ -485,6 +487,7 @@ apis.forEach{ src ->
 
 // Stonecutter variables here.
 stonecutter.const("fabric",env.isFabric)
+stonecutter.const("modmenu",env.modmenuEnabled)
 stonecutter.const("neoforge",env.isNeo)
 
 loom {

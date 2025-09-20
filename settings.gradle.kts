@@ -28,13 +28,10 @@ extensions.configure<StonecutterSettings> {
     shared {
         vers("1.21.8-fabric","1.21.8")
         vers("1.21.8-neoforge","1.21.8")
-        vcsVersion="1.21.8-fabric"
+        vers("1.21.9-fabric","1.21.9-pre2")
+        vcsVersion="1.21.9-fabric"
     }
     create(rootProject)
 }
 
 rootProject.name = "eg_stop_unloading_my_shaders"
-
-
-
-
