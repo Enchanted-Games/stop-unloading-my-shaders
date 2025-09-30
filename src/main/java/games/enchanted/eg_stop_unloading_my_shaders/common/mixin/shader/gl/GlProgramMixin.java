@@ -15,7 +15,7 @@ public class GlProgramMixin {
         slice = @Slice(
             from = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/GlStateManager;glGetProgramInfoLog(II)Ljava/lang/String;")
         ),
-        at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;info(Ljava/lang/String;[Ljava/lang/Object;)V"),
+        at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;info(Ljava/lang/String;[Ljava/lang/Object;)V", remap = false),
         method = "link"
     )
     private static void eg_sumr$conditionallyPreventLinkerInfoLogs(Logger instance, String s, Object[] objects, Operation<Void> original) {
