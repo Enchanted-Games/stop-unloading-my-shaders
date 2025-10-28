@@ -1,2 +1,2 @@
-# 1.1.3
-- Rebuilt on 1.21.9, no functional differences to 1.1.1
+# 1.1.4-beta.1
+- Update to 1.21.11, not extensively tested but seems mostly functional
