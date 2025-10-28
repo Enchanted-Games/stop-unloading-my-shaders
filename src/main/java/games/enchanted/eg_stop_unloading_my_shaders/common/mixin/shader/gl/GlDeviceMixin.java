@@ -4,14 +4,11 @@ import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.opengl.GlDevice;
-import com.mojang.blaze3d.opengl.GlRenderPipeline;
-import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.shaders.ShaderType;
 import games.enchanted.eg_stop_unloading_my_shaders.common.Logging;
 import games.enchanted.eg_stop_unloading_my_shaders.common.ModConstants;
 import games.enchanted.eg_stop_unloading_my_shaders.common.ShaderReloadManager;
 import games.enchanted.eg_stop_unloading_my_shaders.common.translations.Messages;
-import net.minecraft.client.renderer.ShaderManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import org.slf4j.Logger;
@@ -19,11 +16,17 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Slice;
 //? if minecraft: > 1.21.10 {
+import com.mojang.blaze3d.opengl.GlShaderModule;
 import com.mojang.blaze3d.shaders.ShaderSource;
-//?}
+import org.spongepowered.asm.mixin.injection.Coerce;
+//?} else {
+/*import com.mojang.blaze3d.opengl.GlRenderPipeline;
+import com.mojang.blaze3d.pipeline.RenderPipeline;
+import net.minecraft.client.renderer.ShaderManager;
+import java.util.function.BiFunction;
+*///?}
 
 import java.util.Map;
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 @Mixin(GlDevice.class)
