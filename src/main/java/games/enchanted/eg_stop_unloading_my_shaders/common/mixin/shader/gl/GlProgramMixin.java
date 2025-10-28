@@ -13,7 +13,7 @@ import org.spongepowered.asm.mixin.injection.Slice;
 public class GlProgramMixin {
     @WrapOperation(
         slice = @Slice(
-            from = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/GlStateManager;glGetProgramInfoLog(II)Ljava/lang/String;")
+            from = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/opengl/GlStateManager;glGetProgramInfoLog(II)Ljava/lang/String;", remap = false)
         ),
         at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;info(Ljava/lang/String;[Ljava/lang/Object;)V", remap = false),
         method = "link"

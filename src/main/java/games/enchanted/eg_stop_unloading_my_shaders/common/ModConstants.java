@@ -15,6 +15,10 @@ import net.fabricmc.loader.api.FabricLoader;
 /*import net.neoforged.fml.loading.FMLPaths;
 *///?}
 
+//? if minecraft: > 1.21.10 {
+import com.mojang.blaze3d.shaders.ShaderSource;
+//?}
+
 import java.nio.file.Path;
 import java.util.List;
 
@@ -40,6 +44,13 @@ public class ModConstants {
         vanillaShaderConfigs = ((ShaderManagerAccessor) Minecraft.getInstance().getShaderManager()).eg_sumr$invokePrepare(resourceManager, InactiveProfiler.INSTANCE);
         return vanillaShaderConfigs;
     }
+
+    //? if minecraft: > 1.21.10 {
+    public static ShaderSource getVanillaShaderSource() {
+        ShaderManager.Configs configs = getVanillaShaderConfigs();
+        return (resourceLocation, shaderType) -> configs.shaderSources().get(new ShaderManager.ShaderSourceKey(resourceLocation, shaderType));
+    }
+    //?}
 
     /**
      * Returns the path where configuration files are stored within the .minecraft directory

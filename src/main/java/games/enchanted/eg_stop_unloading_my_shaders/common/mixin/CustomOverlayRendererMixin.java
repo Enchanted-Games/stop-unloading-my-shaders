@@ -31,7 +31,11 @@ public class CustomOverlayRendererMixin {
         MouseHandler mouseHandler = this.minecraft.mouseHandler;
         int mouseX = (int)mouseHandler.getScaledXPos(window);
         int mouseY = (int)mouseHandler.getScaledYPos(window);
-        GuiGraphics graphics = new GuiGraphics(this.minecraft, this.guiRenderState);
+        GuiGraphics graphics = new GuiGraphics(this.minecraft, this.guiRenderState
+        //? if minecraft: > 1.21.10 {
+        , mouseX, mouseY
+        //?}
+        );
 
         CustomOverlayManager.INSTANCE.render(graphics, mouseX, mouseY, deltaTracker.getGameTimeDeltaTicks());
     }

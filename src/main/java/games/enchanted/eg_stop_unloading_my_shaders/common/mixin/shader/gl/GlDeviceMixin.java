@@ -18,6 +18,9 @@ import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Slice;
+//? if minecraft: > 1.21.10 {
+import com.mojang.blaze3d.shaders.ShaderSource;
+//?}
 
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -35,10 +38,12 @@ public class GlDeviceMixin {
         return original.call(shaderCache, compilationKey, mapping);
     }
 
-    @WrapMethod(
+    //? if minecraft: <= 1.21.10 {
+    /*@WrapMethod(
         method = "compilePipeline"
     )
     private GlRenderPipeline eg_sumr$checkForFailedShaderCompilationAndTriggerVanillaFallback(RenderPipeline pipeline, BiFunction<ResourceLocation, ShaderType, String> shaderSource, Operation<GlRenderPipeline> original) {
+
         ShaderReloadManager.setShouldLoadVanillaFallback(false);
         GlRenderPipeline compiledPipeline = original.call(pipeline, shaderSource);
         if(compiledPipeline.isValid()) return compiledPipeline;
@@ -76,6 +81,22 @@ public class GlDeviceMixin {
             ));
         }
     }
+    *///?} else {
+    @WrapMethod(
+        method = "compileShader"
+    )
+    private GlShaderModule eg_sumr$checkForFailedShaderCompilationAndTriggerVanillaFallback(@Coerce Object shaderCompilationKey, ShaderSource shaderSource, Operation<GlShaderModule> original) {
+        ShaderReloadManager.setShouldLoadVanillaFallback(false);
+        GlShaderModule shaderModule = original.call(shaderCompilationKey, shaderSource);
+        if(shaderModule != GlShaderModule.INVALID_SHADER) return shaderModule;
+
+        ShaderReloadManager.setShouldLoadVanillaFallback(true);
+        return original.call(
+            shaderCompilationKey,
+            ModConstants.getVanillaShaderSource()
+        );
+    }
+    //?}
 
     // wraps the first error call after checking if the shader source exists
     @WrapOperation(
