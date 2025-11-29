@@ -3,11 +3,11 @@ package games.enchanted.eg_stop_unloading_my_shaders.common;
 import games.enchanted.eg_stop_unloading_my_shaders.common.config.ConfigManager;
 import games.enchanted.eg_stop_unloading_my_shaders.common.screen.CustomOverlayManager;
 import games.enchanted.eg_stop_unloading_my_shaders.common.translations.Messages;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.resources.SimpleReloadInstance;
 import net.minecraft.util.Unit;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;

@@ -1,5 +1,5 @@
-//? if fabric && modmenu {
-/*package games.enchanted.eg_stop_unloading_my_shaders.fabric;
+//? if fabric {
+package games.enchanted.eg_stop_unloading_my_shaders.fabric;
 
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
@@ -11,4 +11,4 @@ public class ModMenuIntegration implements ModMenuApi {
         return ConfigScreen::createConfigScreen;
     }
 }
-*///?}
+//?}

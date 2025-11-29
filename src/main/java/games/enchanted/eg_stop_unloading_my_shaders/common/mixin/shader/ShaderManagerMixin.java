@@ -10,7 +10,7 @@ import games.enchanted.eg_stop_unloading_my_shaders.common.util.PostChainUtil;
 import net.minecraft.client.renderer.PostChainConfig;
 import net.minecraft.client.renderer.ShaderManager;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -39,12 +39,12 @@ public class ShaderManagerMixin {
         ShaderReloadManager.finishedVanillaReload();
     }
 
-    // ResourceLocation local is the result of POST_CHAIN_ID_CONVERTER.fileToId
+    // Identifier local is the result of POST_CHAIN_ID_CONVERTER.fileToId
     @WrapOperation(
         at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false),
-        method = "loadPostChain(Lnet/minecraft/resources/ResourceLocation;Lnet/minecraft/server/packs/resources/Resource;Lcom/google/common/collect/ImmutableMap$Builder;)V"
+        method = "loadPostChain(Lnet/minecraft/resources/Identifier;Lnet/minecraft/server/packs/resources/Resource;Lcom/google/common/collect/ImmutableMap$Builder;)V"
     )
-    private static void eg_sumr$addDummyPostChainConfigIfFailedToParse(Logger instance, String string, Object o, Object exception, Operation<Void> original, ResourceLocation rawLocation, Resource postChain, ImmutableMap.Builder<ResourceLocation, PostChainConfig> output, @Local(ordinal = 1) ResourceLocation name) {
+    private static void eg_sumr$addDummyPostChainConfigIfFailedToParse(Logger instance, String string, Object o, Object exception, Operation<Void> original, Identifier rawLocation, Resource postChain, ImmutableMap.Builder<Identifier, PostChainConfig> output, @Local(ordinal = 1) Identifier name) {
         original.call(instance, string, o, exception);
         output.put(name, PostChainUtil.createDummyPostChainConfig());
         ShaderReloadManager.showErrorMessage(Messages.getFailedToLoadPostChainMessage(name.toString()));

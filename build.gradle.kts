@@ -152,8 +152,6 @@ class Env {
     val isApi = project.parent!!.name == "api"
     val type = if(isFabric) EnvType.FABRIC else EnvType.NEOFORGE
 
-    val modmenuEnabled = optionalVersionProperty("deps.api.modmenu").isPresent;
-
     // if MC requires higher JVMs in future updates change this controller.
     val javaVer = if(atMost("1.16.5")) 8 else if(atMost("1.20.4")) 17 else 21
 
@@ -184,6 +182,12 @@ enum class DepType {
     API,
     // Optional API
     API_OPTIONAL{
+        override fun isOptional(): Boolean {
+            return true
+        }
+    },
+    // Optional API, Compile only if disabled
+    API_OPTIONAL_COMP_ONLY_IF_DISABLED{
         override fun isOptional(): Boolean {
             return true
         }
@@ -245,11 +249,14 @@ val apis = arrayListOf(
     ),
 
     APISource(
-        DepType.API_OPTIONAL,
+        DepType.API_OPTIONAL_COMP_ONLY_IF_DISABLED,
         APIModInfo("modmenu"),
         "com.terraformersmc:modmenu",
         optionalVersionProperty("deps.api.modmenu"),
         { src ->
+            if(boolProperty("deps.api.modmenu.componly")) {
+                false
+            }
             src.versionRange.isPresent && env.isFabric
         }
     )
@@ -487,7 +494,6 @@ apis.forEach{ src ->
 
 // Stonecutter variables here.
 stonecutter.const("fabric",env.isFabric)
-stonecutter.const("modmenu",env.modmenuEnabled)
 stonecutter.const("neoforge",env.isNeo)
 
 loom {
@@ -529,7 +535,16 @@ dependencies {
     }
 
     apis.forEach { src->
-        if(src.enabled) {
+        if(src.type == DepType.API_OPTIONAL_COMP_ONLY_IF_DISABLED) {
+            src.versionRange.ifPresent { ver ->
+                if(src.enabled) {
+                    modApi("${src.mavenLocation}:${ver.min}")
+                } else {
+                    modCompileOnly("${src.mavenLocation}:${ver.min}")
+                }
+            }
+        }
+        else if(src.enabled) {
             src.versionRange.ifPresent { ver ->
                 if(src.type == DepType.API || src.type == DepType.API_OPTIONAL) {
                     modApi("${src.mavenLocation}:${ver.min}")

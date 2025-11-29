@@ -26,9 +26,6 @@ extensions.configure<StonecutterSettings> {
 
     // The versions listed here, commented out or otherwise, all have pre-made gradle.properties.
     shared {
-        vers("1.21.8-fabric","1.21.8")
-        vers("1.21.8-neoforge","1.21.8")
-        vers("1.21.9-fabric","1.21.9")
         vers("1.21.11-fabric","1.21.11")
         vcsVersion="1.21.11-fabric"
     }

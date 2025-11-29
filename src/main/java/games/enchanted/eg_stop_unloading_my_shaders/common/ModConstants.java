@@ -48,7 +48,7 @@ public class ModConstants {
     //? if minecraft: > 1.21.10 {
     public static ShaderSource getVanillaShaderSource() {
         ShaderManager.Configs configs = getVanillaShaderConfigs();
-        return (resourceLocation, shaderType) -> configs.shaderSources().get(new ShaderManager.ShaderSourceKey(resourceLocation, shaderType));
+        return (Identifier, shaderType) -> configs.shaderSources().get(new ShaderManager.ShaderSourceKey(Identifier, shaderType));
     }
     //?}
 

@@ -1,2 +1,2 @@
 accessWidener v2 named
-accessible method net/minecraft/client/renderer/ShaderManager$ShaderSourceKey <init> (Lnet/minecraft/resources/ResourceLocation;Lcom/mojang/blaze3d/shaders/ShaderType;)V
+accessible method net/minecraft/client/renderer/ShaderManager$ShaderSourceKey <init> (Lnet/minecraft/resources/Identifier;Lcom/mojang/blaze3d/shaders/ShaderType;)V

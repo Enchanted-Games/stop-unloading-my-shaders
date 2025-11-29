@@ -6,7 +6,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ComponentRenderUtils;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
 
 import java.util.ArrayList;
@@ -15,11 +15,11 @@ import java.util.List;
 public class ShaderMessageOverlay extends CustomOverlay {
     private static final int PADDING_BLOCK = 6;
     private static final int PADDING_INLINE = 4;
-    private static final ResourceLocation LINE_BACKGROUND_LOCATION = ResourceLocation.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/line_background");
-    private static final ResourceLocation LINE_BACKGROUND_HOVER_LOCATION = ResourceLocation.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/line_background_hover");
+    private static final Identifier LINE_BACKGROUND_LOCATION = Identifier.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/line_background");
+    private static final Identifier LINE_BACKGROUND_HOVER_LOCATION = Identifier.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/line_background_hover");
     private static final int ARROW_SIZE = 6;
-    private static final ResourceLocation ARROW_DOWN_LOCATION = ResourceLocation.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/arrow_down");
-    private static final ResourceLocation ARROW_UP_LOCATION = ResourceLocation.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/arrow_up");
+    private static final Identifier ARROW_DOWN_LOCATION = Identifier.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/arrow_down");
+    private static final Identifier ARROW_UP_LOCATION = Identifier.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/arrow_up");
 
     private boolean isClearing = false;
     private int removePinnedAtAge = -1;
