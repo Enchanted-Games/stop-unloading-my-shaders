@@ -10,6 +10,9 @@
   "debug.eg_stop_unloading_my_shaders.linkage_error": "Failed to link programs for pipeline %s:",
   "debug.eg_stop_unloading_my_shaders.no_source_error": "Couldn't find source for %s shader: %s",
   "debug.eg_stop_unloading_my_shaders.compilation_error": "Couldn't compile %s shader: %s",
+  "debug.eg_stop_unloading_my_shaders.preprocessor_error": "Pre-processor error in %s:",
+  "debug.eg_stop_unloading_my_shaders.preprocessor_error.probably_no_version": "#version directive may be missing",
+  "debug.eg_stop_unloading_my_shaders.preprocessor_error.check_log": "check output log for full exception",
 
   "debug.eg_stop_unloading_my_shaders.no_full_error": "Couldn't get full error message",
 

@@ -1,52 +1,45 @@
 package games.enchanted.eg_stop_unloading_my_shaders.common.mixin.shader.gl;
 
-import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.opengl.GlDevice;
 import com.mojang.blaze3d.shaders.ShaderType;
 import games.enchanted.eg_stop_unloading_my_shaders.common.Logging;
-import games.enchanted.eg_stop_unloading_my_shaders.common.ModConstants;
 import games.enchanted.eg_stop_unloading_my_shaders.common.ShaderReloadManager;
+import games.enchanted.eg_stop_unloading_my_shaders.common.duck.GpuDeviceAdditions;
 import games.enchanted.eg_stop_unloading_my_shaders.common.translations.Messages;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Slice;
-import com.mojang.blaze3d.opengl.GlShaderModule;
-import com.mojang.blaze3d.shaders.ShaderSource;
-import org.spongepowered.asm.mixin.injection.Coerce;
 
 import java.util.Map;
 import java.util.function.Function;
 
 @Mixin(GlDevice.class)
-public class GlDeviceMixin {
-    @WrapOperation(
-        at = @At(value = "INVOKE", target = "Ljava/util/Map;computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;"),
-        method = "getOrCompileShader"
-    )
-    private <K, V> Object eg_sumr$bypassShaderCacheToForceVanillaFallback(Map<K, V> shaderCache, K compilationKey, Function<? super K, ? extends V> mapping, Operation<V> original) {
-        if(ShaderReloadManager.shouldLoadVanillaFallback()) return mapping.apply(compilationKey);
+class GlDeviceMixin implements GpuDeviceAdditions {
+    @Unique
+    private boolean eg_sumr$bypassPipelineCache = false;
 
-        return original.call(shaderCache, compilationKey, mapping);
+    @Override
+    public void eg_sumr$setBypassPipelineCache(boolean bypass) {
+        this.eg_sumr$bypassPipelineCache = bypass;
     }
 
-    @WrapMethod(
-        method = "compileShader"
+    @WrapOperation(
+        at = @At(value = "INVOKE", target = "Ljava/util/Map;computeIfAbsent(Ljava/lang/Object;Ljava/util/function/Function;)Ljava/lang/Object;"),
+        method = {"precompilePipeline(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lcom/mojang/blaze3d/shaders/ShaderSource;)Lcom/mojang/blaze3d/opengl/GlRenderPipeline;", "getOrCompileShader"}
     )
-    private GlShaderModule eg_sumr$checkForFailedShaderCompilationAndTriggerVanillaFallback(@Coerce Object shaderCompilationKey, ShaderSource shaderSource, Operation<GlShaderModule> original) {
-        ShaderReloadManager.setShouldLoadVanillaFallback(false);
-        GlShaderModule shaderModule = original.call(shaderCompilationKey, shaderSource);
-        if(shaderModule != GlShaderModule.INVALID_SHADER) return shaderModule;
-
-        ShaderReloadManager.setShouldLoadVanillaFallback(true);
-        return original.call(
-            shaderCompilationKey,
-            ModConstants.getVanillaShaderSource()
-        );
+    private <K, V> V eg_sumr$loadFallbacksIfNecessary(Map<K, V> instance, K key, Function<? super K, ? extends V> theThingToComputeIfAbsent, Operation<V> original) {
+        if(eg_sumr$bypassPipelineCache) {
+            V val = theThingToComputeIfAbsent.apply(key);
+            instance.put(key, val);
+            return val;
+        }
+        return original.call(instance, key, theThingToComputeIfAbsent);
     }
 
     // wraps the first error call after checking if the shader source exists

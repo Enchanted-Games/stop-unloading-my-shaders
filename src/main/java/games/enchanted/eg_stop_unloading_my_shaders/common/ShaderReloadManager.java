@@ -16,7 +16,6 @@ import java.util.concurrent.CompletableFuture;
 
 public abstract class ShaderReloadManager {
     private static boolean isHotReloading = false;
-    private static boolean shouldLoadVanillaFallback = false;
     private static final List<ShaderLogMessage> knownErrorsThisReload = new ArrayList<>();
 
     public static void triggerReload() {
@@ -92,13 +91,6 @@ public abstract class ShaderReloadManager {
 
     private static void clearKnownErrors() {
         knownErrorsThisReload.clear();
-    }
-
-    public static boolean shouldLoadVanillaFallback() {
-        return shouldLoadVanillaFallback;
-    }
-    public static void setShouldLoadVanillaFallback(boolean newValue) {
-        shouldLoadVanillaFallback = newValue;
     }
 
     public static void finishedVanillaReload() {
