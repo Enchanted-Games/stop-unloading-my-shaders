@@ -6,6 +6,7 @@ import games.enchanted.eg_stop_unloading_my_shaders.common.translations.Messages
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.resources.SimpleReloadInstance;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Unit;
 import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
@@ -22,6 +23,7 @@ public abstract class ShaderReloadManager {
         isHotReloading = true;
         CustomOverlayManager.SHADER_MESSAGE_OVERLAY.clear();
         showReloadingShadersMessage();
+        setCollapsedMessages();
         Minecraft minecraft = Minecraft.getInstance();
         SimpleReloadInstance.create(
             minecraft.getResourceManager(),
@@ -41,6 +43,13 @@ public abstract class ShaderReloadManager {
 
     public static void showReloadingShadersMessage() {
         showMessage(Messages.getReloadingShadersMessage(), 200);
+    }
+
+    protected static void setCollapsedMessages() {
+        CustomOverlayManager.SHADER_MESSAGE_OVERLAY.setMessagesToShowWhenCollapsed(List.of(
+            Messages.appendMessagePrefix(Messages.MessagePrefix.SUMR, Component.translatableWithFallback("info.eg_stop_unloading_my_shaders.shader_errors", "_There are some shader errors!")),
+            Messages.appendMessagePrefix(Messages.MessagePrefix.NONE, Component.translatableWithFallback("info.eg_stop_unloading_my_shaders.click_to_show_errors", "_Click here to show or F3 + R to reload shaders").withColor(CommonColors.LIGHT_GRAY))
+        ));
     }
 
     public static void showShaderErrorMessage(Component shortMessage, @Nullable Component longMessage) {
@@ -77,16 +86,18 @@ public abstract class ShaderReloadManager {
      *                     overlay
      */
     public static void showMessage(Component message, int ticksVisible) {
-        if(ConfigManager.loggingMode.showInChat()) {
-            Minecraft.getInstance().gui.getChat().addMessage(message);
-        }
-        if(!ConfigManager.loggingMode.showInBox()) return;
-        if(ticksVisible > 0) {
-            CustomOverlayManager.SHADER_MESSAGE_OVERLAY.addPinnedMessage(message, ticksVisible);
-            return;
-        }
-        CustomOverlayManager.SHADER_MESSAGE_OVERLAY.addMessage(message);
-        CustomOverlayManager.SHADER_MESSAGE_OVERLAY.setRemoveAllAfterTicks(isHotReloading ? 2400 : 1200);
+        Minecraft.getInstance().execute(() -> {
+            if(ConfigManager.loggingMode.showInChat()) {
+                Minecraft.getInstance().gui.getChat().addMessage(message);
+            }
+            if(!ConfigManager.loggingMode.showInBox()) return;
+            if(ticksVisible > 0) {
+                CustomOverlayManager.SHADER_MESSAGE_OVERLAY.addMessage(message, ticksVisible);
+                return;
+            }
+            CustomOverlayManager.SHADER_MESSAGE_OVERLAY.addMessage(message);
+            CustomOverlayManager.SHADER_MESSAGE_OVERLAY.setCollapseAfterTicks(isHotReloading ? 2400 : 1200);
+        });
     }
 
     private static void clearKnownErrors() {
@@ -96,6 +107,7 @@ public abstract class ShaderReloadManager {
     public static void finishedVanillaReload() {
         if(isHotReloading) return;
         clearKnownErrors();
+        setCollapsedMessages();
     }
 
     public static void startedVanillaReload() {

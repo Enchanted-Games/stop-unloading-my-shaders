@@ -2,6 +2,10 @@
   "prefix.eg_stop_unloading_my_shaders.info": "[SUMR Info]:",
   "prefix.eg_stop_unloading_my_shaders.error": "[SUMR Error]:",
   "prefix.eg_stop_unloading_my_shaders.error_continuation": "└",
+  "prefix.eg_stop_unloading_my_shaders.sumr": "[SUMR]:",
+
+  "info.eg_stop_unloading_my_shaders.shader_errors": "There are some shader errors!",
+  "info.eg_stop_unloading_my_shaders.click_to_show_errors": "Click here to show or F3 + R to reload shaders",
 
   "debug.eg_stop_unloading_my_shaders.reloading_shaders": "Reloading shaders",
 
@@ -15,6 +19,7 @@
   "debug.eg_stop_unloading_my_shaders.preprocessor_error.check_log": "check output log for full exception",
 
   "debug.eg_stop_unloading_my_shaders.no_full_error": "Couldn't get full error message",
+
 
   "gui.eg_stop_unloading_my_shaders.button.log_mode": "Log messages to: %s",
   "gui.eg_stop_unloading_my_shaders.button.log_mode.tooltip": "Box: Logs messages to a box in the top left of the screen, visible everywhere.\nChat: Logs messages to the in-game chat, only visible in a world.\nBoth: Logs messages to the box and chat",

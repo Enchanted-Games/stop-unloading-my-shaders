@@ -1,4 +1,4 @@
-package games.enchanted.eg_stop_unloading_my_shaders.common.mixin;
+package games.enchanted.eg_stop_unloading_my_shaders.common.mixin.overlay;
 
 import com.mojang.blaze3d.platform.Window;
 import games.enchanted.eg_stop_unloading_my_shaders.common.screen.CustomOverlayManager;

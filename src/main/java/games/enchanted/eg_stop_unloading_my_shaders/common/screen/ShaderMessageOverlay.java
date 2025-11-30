@@ -4,6 +4,7 @@ import games.enchanted.eg_stop_unloading_my_shaders.common.ModConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.ComponentRenderUtils;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -21,10 +22,12 @@ public class ShaderMessageOverlay extends CustomOverlay {
     private static final Identifier ARROW_DOWN_LOCATION = Identifier.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/arrow_down");
     private static final Identifier ARROW_UP_LOCATION = Identifier.fromNamespaceAndPath(ModConstants.MOD_ID, "error_box/arrow_up");
 
+    private boolean messagesCollapsed = false;
     private boolean isClearing = false;
     private int removePinnedAtAge = -1;
-    private int removeAllAtAge = -1;
+    private int collapseMessagesAtAge = -1;
     private final ArrayList<Component> rawMessages = new ArrayList<>();
+    private List<Component> messagesToShowWhenCollapsed = List.of();
     private final ArrayList<FormattedCharSequence> splitMessageLines = new ArrayList<>();
 
     private int currentScrollIndex = 0;
@@ -32,15 +35,19 @@ public class ShaderMessageOverlay extends CustomOverlay {
     private final float scale = 1.0f;
     private final int lineWidth = 320;
     private final int lineHeight = 9;
-    private final int visibleLines = 9;
+    private final int maxVisibleLines = 10;
 
     private int age = 0;
 
-    public void addMessage(Component message) {
-        addPinnedMessage(message, -1);
+    public void setMessagesToShowWhenCollapsed(List<Component> messages) {
+        this.messagesToShowWhenCollapsed = messages;
     }
 
-    public void addPinnedMessage(Component message, int ticksVisible) {
+    public void addMessage(Component message) {
+        addMessage(message, -1);
+    }
+
+    public void addMessage(Component message, int ticksVisible) {
         List<FormattedCharSequence> wrapped = ComponentRenderUtils.wrapComponents(message, lineWidth, Minecraft.getInstance().font);
         if(ticksVisible > -1) {
             this.splitMessageLines.addAll(0, wrapped);
@@ -56,7 +63,7 @@ public class ShaderMessageOverlay extends CustomOverlay {
     private void scrollByLines(int lines) {
         this.currentScrollIndex += lines;
         int totalLines = this.splitMessageLines.size();
-        int maxScroll = totalLines - visibleLines;
+        int maxScroll = totalLines - maxVisibleLines;
         if (this.currentScrollIndex > maxScroll) {
             this.currentScrollIndex = maxScroll;
         }
@@ -71,18 +78,17 @@ public class ShaderMessageOverlay extends CustomOverlay {
         this.age++;
         if(this.removePinnedAtAge > -1 && this.age > this.removePinnedAtAge && !this.rawMessages.isEmpty() && !this.isClearing) {
             this.rawMessages.removeFirst();
-            resplitMessages();
+            splitMessages();
             this.removePinnedAtAge = -1;
         }
-        if(this.removeAllAtAge > -1 && this.age > this.removeAllAtAge) {
-            this.clear();
-            this.removeAllAtAge = -1;
+        if(this.collapseMessagesAtAge > -1 && this.age > this.collapseMessagesAtAge) {
+            this.collapseMessages();
         }
     }
 
-    private void resplitMessages() {
+    private void splitMessages() {
         this.splitMessageLines.clear();
-        for (Component message : rawMessages) {
+        for (Component message : this.messagesCollapsed ? messagesToShowWhenCollapsed : rawMessages) {
             List<FormattedCharSequence> wrapped = ComponentRenderUtils.wrapComponents(message, lineWidth, Minecraft.getInstance().font);
             this.splitMessageLines.addAll(wrapped);
         }
@@ -93,17 +99,33 @@ public class ShaderMessageOverlay extends CustomOverlay {
         this.splitMessageLines.clear();
         this.rawMessages.clear();
         this.currentScrollIndex = 0;
+        this.collapseMessagesAtAge = -1;
+        this.messagesCollapsed = false;
         this.isClearing = false;
     }
 
-    public void setRemoveAllAfterTicks(int ticks) {
+    public void collapseMessages() {
+        this.currentScrollIndex = 0;
+        this.collapseMessagesAtAge = -1;
+        this.messagesCollapsed = true;
+        this.splitMessages();
+    }
+
+    public void expandMessages() {
+        this.messagesCollapsed = false;
+        this.splitMessages();
+    }
+
+    public void setCollapseAfterTicks(int ticks) {
         int newRemoveAtAge = this.age + ticks;
-        if(newRemoveAtAge > this.removeAllAtAge) this.removeAllAtAge = newRemoveAtAge;
+        if(newRemoveAtAge > this.collapseMessagesAtAge) this.collapseMessagesAtAge = newRemoveAtAge;
     }
 
     private boolean isHoveringScrollBox(double mouseX, double mouseY) {
         if(mouseX > this.lineWidth + (PADDING_INLINE * 2)) return false;
-        return !(mouseY > (this.lineHeight * Math.min(this.visibleLines, this.splitMessageLines.size())) + (PADDING_BLOCK * 2));
+        int visibleLines = Math.min(this.maxVisibleLines, this.splitMessageLines.size());
+        if(visibleLines == 0) return false;
+        return !(mouseY > (this.lineHeight * visibleLines) + (PADDING_BLOCK * 2));
     }
 
     @Override
@@ -115,9 +137,19 @@ public class ShaderMessageOverlay extends CustomOverlay {
     }
 
     @Override
+    boolean onClick(MouseButtonEvent mouseButtonEvent) {
+        if(isHoveringScrollBox(mouseButtonEvent.x(), mouseButtonEvent.y())) {
+            expandMessages();
+        } else if(!this.messagesCollapsed && this.removePinnedAtAge <= -1) {
+            collapseMessages();
+        }
+        return super.onClick(mouseButtonEvent);
+    }
+
+    @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        if(this.splitMessageLines.isEmpty()) return;
-        int linesToRender = Math.min(this.splitMessageLines.size() - this.currentScrollIndex, visibleLines);
+        if(this.splitMessageLines.isEmpty() || (this.messagesCollapsed && this.rawMessages.isEmpty())) return;
+        int linesToRender = Math.min(this.splitMessageLines.size() - this.currentScrollIndex, maxVisibleLines);
         int width = lineWidth + (PADDING_INLINE * 2);
 
         guiGraphics.pose().pushMatrix();
@@ -149,7 +181,7 @@ public class ShaderMessageOverlay extends CustomOverlay {
         }
 
         boolean isAtTop = this.currentScrollIndex == 0;
-        boolean isAtBottom = this.currentScrollIndex >= this.splitMessageLines.size() - this.visibleLines;
+        boolean isAtBottom = this.currentScrollIndex >= this.splitMessageLines.size() - this.maxVisibleLines;
 
         if(!isAtTop) {
             guiGraphics.blitSprite(

@@ -50,7 +50,9 @@ public class Messages {
     public enum MessagePrefix {
         INFO("prefix.eg_stop_unloading_my_shaders.info", "_[SUMR Info]:", Style.EMPTY.withBold(true).withColor(ChatFormatting.YELLOW)),
         ERROR("prefix.eg_stop_unloading_my_shaders.error", "_[SUMR Error]:", Style.EMPTY.withBold(true).withColor(ChatFormatting.RED)),
-        ERROR_CONTINUATION("prefix.eg_stop_unloading_my_shaders.error_continuation", "_└", Style.EMPTY.withBold(true).withColor(ChatFormatting.RED));
+        ERROR_CONTINUATION("prefix.eg_stop_unloading_my_shaders.error_continuation", "_└", Style.EMPTY.withBold(true).withColor(ChatFormatting.RED)),
+        SUMR("prefix.eg_stop_unloading_my_shaders.sumr", "_[SUMR]:", Style.EMPTY.withBold(true).withColor(ChatFormatting.YELLOW)),
+        NONE();
 
         private final String translationKey;
         private final String fallback;
@@ -62,7 +64,14 @@ public class Messages {
             this.style = style;
         }
 
+        MessagePrefix() {
+            this.translationKey = null;
+            this.fallback = null;
+            this.style = null;
+        }
+
         Component getAsComponent() {
+            if(this == NONE) return Component.empty();
             return Component.translatableWithFallback(translationKey, fallback).withStyle(style);
         }
     }

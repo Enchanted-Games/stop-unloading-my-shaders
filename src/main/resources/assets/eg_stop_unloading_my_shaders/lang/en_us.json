@@ -2,6 +2,10 @@
   "prefix.eg_stop_unloading_my_shaders.info": "[SUMR Info]:",
   "prefix.eg_stop_unloading_my_shaders.error": "[SUMR Error]:",
   "prefix.eg_stop_unloading_my_shaders.error_continuation": "└",
+  "prefix.eg_stop_unloading_my_shaders.sumr": "[SUMR]:",
+
+  "info.eg_stop_unloading_my_shaders.shader_errors": "There are some shader errors!",
+  "info.eg_stop_unloading_my_shaders.click_to_show_errors": "Click here to show or F3 + R to reload shaders",
 
   "debug.eg_stop_unloading_my_shaders.reloading_shaders": "Reloading shaders",
 

@@ -6,9 +6,9 @@
   "mixins": [
   ],
   "client": [
-    "CustomOverlayRendererMixin",
-    "CustomOverlayScrollerMixin",
-    "CustomOverlayTickerMixin",
+    "overlay.CustomOverlayRendererMixin",
+    "overlay.CustomOverlayMouseEventsMixin",
+    "overlay.CustomOverlayTickerMixin",
     "KeyboardHandlerMixin",
     "accessor.ShaderManagerAccessor",
     "shader.CompilationCacheMixin",
