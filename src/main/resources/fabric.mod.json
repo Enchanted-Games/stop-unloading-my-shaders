@@ -26,6 +26,7 @@
       "games.enchanted.eg_stop_unloading_my_shaders.fabric.ModMenuIntegration"
     ]
   },
+  "accessWidener": "eg_stop_unloading_my_shaders.accesswidener",
 ${mixin_field}
 ${dependencies_field}
 }

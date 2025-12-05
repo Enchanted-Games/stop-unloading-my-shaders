@@ -105,7 +105,6 @@ public class ShaderMessageOverlay extends CustomOverlay {
     }
 
     public void collapseMessages() {
-        this.currentScrollIndex = 0;
         this.collapseMessagesAtAge = -1;
         this.messagesCollapsed = true;
         this.splitMessages();
@@ -131,6 +130,7 @@ public class ShaderMessageOverlay extends CustomOverlay {
     @Override
     public boolean onScroll(double mouseX, double mouseY, double scrollX, double scrollY) {
         if(this.splitMessageLines.isEmpty()) return false;
+        if(this.messagesCollapsed) return false;
         if(!isHoveringScrollBox(mouseX, mouseY)) return false;
         scrollByLines((int) Math.clamp(scrollY * -1.0, -1.0, 1.0));
         return true;
@@ -149,7 +149,8 @@ public class ShaderMessageOverlay extends CustomOverlay {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         if(this.splitMessageLines.isEmpty() || (this.messagesCollapsed && this.rawMessages.isEmpty())) return;
-        int linesToRender = Math.min(this.splitMessageLines.size() - this.currentScrollIndex, maxVisibleLines);
+        int scrollIndex = (this.messagesCollapsed ? 0 : this.currentScrollIndex);
+        int linesToRender = Math.min(this.splitMessageLines.size() - scrollIndex, maxVisibleLines);
         int width = lineWidth + (PADDING_INLINE * 2);
 
         guiGraphics.pose().pushMatrix();
@@ -172,7 +173,7 @@ public class ShaderMessageOverlay extends CustomOverlay {
             );
             guiGraphics.drawString(
                 Minecraft.getInstance().font,
-                this.splitMessageLines.get(i + this.currentScrollIndex),
+                this.splitMessageLines.get(i + scrollIndex),
                 x,
                 y,
                 -1
@@ -180,10 +181,10 @@ public class ShaderMessageOverlay extends CustomOverlay {
 
         }
 
-        boolean isAtTop = this.currentScrollIndex == 0;
-        boolean isAtBottom = this.currentScrollIndex >= this.splitMessageLines.size() - this.maxVisibleLines;
+        boolean isAtTop = scrollIndex == 0;
+        boolean isAtBottom = scrollIndex >= this.splitMessageLines.size() - this.maxVisibleLines;
 
-        if(!isAtTop) {
+        if(!isAtTop && !this.messagesCollapsed) {
             guiGraphics.blitSprite(
                 RenderPipelines.GUI_TEXTURED,
                 ARROW_UP_LOCATION,
@@ -194,7 +195,7 @@ public class ShaderMessageOverlay extends CustomOverlay {
             );
         }
 
-        if(!isAtBottom) {
+        if(!isAtBottom && !this.messagesCollapsed) {
             guiGraphics.blitSprite(
                 RenderPipelines.GUI_TEXTURED,
                 ARROW_DOWN_LOCATION,
