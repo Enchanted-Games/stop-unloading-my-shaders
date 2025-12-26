@@ -16,20 +16,19 @@
   "environment": "client",
   "entrypoints": {
     "main": [
-      "games.enchanted.eg_stop_unloading_my_shaders.fabric.FabricCommonEntry"
+      "games.enchanted.${id}.fabric.FabricCommonEntry"
     ],
     "client": [
-      "games.enchanted.eg_stop_unloading_my_shaders.fabric.FabricClientEntry"
+      "games.enchanted.${id}.fabric.FabricClientEntry"
     ],
     "modmenu": [
-      "games.enchanted.eg_stop_unloading_my_shaders.fabric.ModMenuIntegration"
+      "games.enchanted.${id}.fabric.ModMenuIntegration"
     ]
   },
-  "accessWidener": "eg_stop_unloading_my_shaders.accesswidener",
+  "accessWidener": "${id}.accesswidener",
   "mixins": [
     {
-      "config": "eg_stop_unloading_my_shaders.mixins.json",
-      "environment": "client"
+      "config": "${id}.mixins.json"
     }
   ],
   "depends": {
