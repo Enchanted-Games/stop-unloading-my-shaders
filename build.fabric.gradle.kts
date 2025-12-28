@@ -21,20 +21,6 @@ repositories {
             includeGroupAndSubgroups("com.terraformersmc")
         }
     }
-    maven {
-        name = "Parchment Mappings"
-        url = uri("https://maven.parchmentmc.org")
-        content {
-            includeGroupAndSubgroups("org.parchmentmc")
-        }
-    }
-    maven {
-        name = "Gegy (mojbackward)"
-        url = uri("https://maven.gegy.dev/releases/")
-        content {
-            includeGroupAndSubgroups("dev.lambdaurora")
-        }
-    }
 }
 
 dependencies {

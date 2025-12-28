@@ -3,7 +3,7 @@
     "description": "${modid} resources",
     "pack_format": 15,
     "supported_formats": [15, 999999],
-    "min_format": 64,
+    "min_format": 15,
     "max_format": 999999
   }
 }
