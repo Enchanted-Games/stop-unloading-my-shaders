@@ -25,7 +25,7 @@ stonecutter {
                 version("$version-${it.replace("_remap", "")}", version).buildscript = "build.$it.gradle.kts"
             }
 
-        ver("1.21.11", "fabric_remap", "neoforge")
+//        ver("1.21.11", "fabric_remap", "neoforge")
         ver("26.1", "fabric")
 
         vcsVersion = "26.1-fabric"

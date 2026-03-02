@@ -33,7 +33,7 @@ dependencies {
         compileOnly("com.terraformersmc:modmenu:${property("deps.modmenu")}")
         localRuntime("com.terraformersmc:modmenu:${property("deps.modmenu")}")
     } else {
-        compileOnly("com.terraformersmc:modmenu:15.0.0-beta.3")
+        compileOnly("com.terraformersmc:modmenu:18.0.0-alpha.5")
     }
 }
 

@@ -9,10 +9,12 @@ import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.preprocessor.GlslPreprocessor;
 import com.mojang.blaze3d.shaders.ShaderSource;
 import com.mojang.blaze3d.systems.GpuDevice;
+import com.mojang.blaze3d.systems.GpuDeviceBackend;
 import games.enchanted.eg_stop_unloading_my_shaders.common.Logging;
 import games.enchanted.eg_stop_unloading_my_shaders.common.ModConstants;
 import games.enchanted.eg_stop_unloading_my_shaders.common.ShaderReloadManager;
 import games.enchanted.eg_stop_unloading_my_shaders.common.duck.GpuDeviceAdditions;
+import games.enchanted.eg_stop_unloading_my_shaders.common.mixin.accessor.GpuDeviceAccessor;
 import games.enchanted.eg_stop_unloading_my_shaders.common.translations.Messages;
 import games.enchanted.eg_stop_unloading_my_shaders.common.util.PostChainUtil;
 import net.minecraft.client.renderer.PostChainConfig;
@@ -57,9 +59,16 @@ public class ShaderManagerMixin {
         CompiledRenderPipeline compiled = original.call(device, renderPipeline, shaderSource);
         if(compiled.isValid()) return compiled;
 
-        ((GpuDeviceAdditions) device).eg_sumr$setBypassPipelineCache(true);
+        GpuDeviceBackend backend = ((GpuDeviceAccessor) device).eg_sumr$getBackend();
+
+        if(!(backend instanceof GpuDeviceAdditions deviceAdditions)) {
+            Logging.error("GpuDeviceBackend implementation '{}' not handled by SUMR", device.getClass().getCanonicalName());
+            return compiled;
+        }
+
+        deviceAdditions.eg_sumr$setBypassPipelineCache(true);
         CompiledRenderPipeline vanillaCompiled = original.call(device, renderPipeline, ModConstants.getVanillaShaderSource());
-        ((GpuDeviceAdditions) device).eg_sumr$setBypassPipelineCache(false);
+        deviceAdditions.eg_sumr$setBypassPipelineCache(false);
         return vanillaCompiled;
     }
 

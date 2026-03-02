@@ -88,7 +88,7 @@ public abstract class ShaderReloadManager {
     public static void showMessage(Component message, int ticksVisible) {
         Minecraft.getInstance().execute(() -> {
             if(ConfigManager.loggingMode.showInChat()) {
-                Minecraft.getInstance().gui.getChat().addMessage(message);
+                Minecraft.getInstance().gui.getChat().addServerSystemMessage(message);
             }
             if(!ConfigManager.loggingMode.showInBox()) return;
             if(ticksVisible > 0) {

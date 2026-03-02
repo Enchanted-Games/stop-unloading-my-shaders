@@ -2,7 +2,6 @@ package games.enchanted.eg_stop_unloading_my_shaders.common.mixin.shader.gl;
 
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.mojang.blaze3d.opengl.GlDevice;
 import com.mojang.blaze3d.shaders.ShaderType;
 import games.enchanted.eg_stop_unloading_my_shaders.common.Logging;
 import games.enchanted.eg_stop_unloading_my_shaders.common.ShaderReloadManager;
@@ -19,8 +18,8 @@ import org.spongepowered.asm.mixin.injection.Slice;
 import java.util.Map;
 import java.util.function.Function;
 
-@Mixin(GlDevice.class)
-class GlDeviceMixin implements GpuDeviceAdditions {
+@Mixin(targets = "com/mojang/blaze3d/opengl/GlDevice")
+public class GlDeviceMixin implements GpuDeviceAdditions {
     @Unique
     private boolean eg_sumr$bypassPipelineCache = false;
 
