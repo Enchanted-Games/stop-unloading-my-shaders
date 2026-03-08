@@ -1,12 +1,13 @@
 package games.enchanted.eg_stop_unloading_my_shaders.common.mixin.overlay;
 
 import com.mojang.blaze3d.platform.Window;
+import games.enchanted.eg_stop_unloading_my_shaders.common.mixin.accessor.GuiRendererAccessor;
 import games.enchanted.eg_stop_unloading_my_shaders.common.screen.CustomOverlayManager;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.render.state.GuiRenderState;
+import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,7 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(GameRenderer.class)
 public class CustomOverlayRendererMixin {
     @Shadow @Final private Minecraft minecraft;
-    @Shadow @Final private GuiRenderState guiRenderState;
+    @Shadow @Final private GuiRenderer guiRenderer;
 
     @Inject(
         at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/render/GuiRenderer;render(Lcom/mojang/blaze3d/buffers/GpuBufferSlice;)V"),
@@ -31,7 +32,7 @@ public class CustomOverlayRendererMixin {
         MouseHandler mouseHandler = this.minecraft.mouseHandler;
         int mouseX = (int)mouseHandler.getScaledXPos(window);
         int mouseY = (int)mouseHandler.getScaledYPos(window);
-        GuiGraphics graphics = new GuiGraphics(this.minecraft, this.guiRenderState, mouseX, mouseY);
+        GuiGraphics graphics = new GuiGraphics(this.minecraft, ((GuiRendererAccessor) this.guiRenderer).eg_sumr$getRenderState(), mouseX, mouseY);
 
         CustomOverlayManager.INSTANCE.render(graphics, mouseX, mouseY, deltaTracker.getGameTimeDeltaTicks());
     }

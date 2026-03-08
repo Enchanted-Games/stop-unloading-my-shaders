@@ -8,6 +8,7 @@
   "client": [
     "KeyboardHandlerMixin",
     "accessor.GpuDeviceAccessor",
+    "accessor.GuiRendererAccessor",
     "accessor.ShaderManagerAccessor",
     "overlay.CustomOverlayMouseEventsMixin",
     "overlay.CustomOverlayRendererMixin",
