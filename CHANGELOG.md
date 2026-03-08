@@ -1,2 +1,2 @@
-# 1.3.1
-- Update to 26.1-snapshot-10
+# 1.3.2
+- Update to 26.1-snapshot-11
