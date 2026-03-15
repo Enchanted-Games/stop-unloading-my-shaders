@@ -2,7 +2,7 @@ package games.enchanted.eg_stop_unloading_my_shaders.common.screen;
 
 import games.enchanted.eg_stop_unloading_my_shaders.common.ModConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ComponentRenderUtils;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -147,7 +147,7 @@ public class ShaderMessageOverlay extends CustomOverlay {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         if(this.splitMessageLines.isEmpty() || (this.messagesCollapsed && this.rawMessages.isEmpty())) return;
         int scrollIndex = (this.messagesCollapsed ? 0 : this.currentScrollIndex);
         int linesToRender = Math.min(this.splitMessageLines.size() - scrollIndex, maxVisibleLines);
@@ -171,7 +171,7 @@ public class ShaderMessageOverlay extends CustomOverlay {
                 width,
                 isFirstVisible ? y + height : height
             );
-            guiGraphics.drawString(
+            guiGraphics.text(
                 Minecraft.getInstance().font,
                 this.splitMessageLines.get(i + scrollIndex),
                 x,

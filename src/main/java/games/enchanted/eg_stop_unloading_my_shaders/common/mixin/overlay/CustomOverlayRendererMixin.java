@@ -6,7 +6,7 @@ import games.enchanted.eg_stop_unloading_my_shaders.common.screen.CustomOverlayM
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.MouseHandler;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.render.GuiRenderer;
 import net.minecraft.client.renderer.GameRenderer;
 import org.spongepowered.asm.mixin.Final;
@@ -32,8 +32,8 @@ public class CustomOverlayRendererMixin {
         MouseHandler mouseHandler = this.minecraft.mouseHandler;
         int mouseX = (int)mouseHandler.getScaledXPos(window);
         int mouseY = (int)mouseHandler.getScaledYPos(window);
-        GuiGraphics graphics = new GuiGraphics(this.minecraft, ((GuiRendererAccessor) this.guiRenderer).eg_sumr$getRenderState(), mouseX, mouseY);
+        GuiGraphicsExtractor graphics = new GuiGraphicsExtractor(this.minecraft, ((GuiRendererAccessor) this.guiRenderer).eg_sumr$getRenderState(), mouseX, mouseY);
 
-        CustomOverlayManager.INSTANCE.render(graphics, mouseX, mouseY, deltaTracker.getGameTimeDeltaTicks());
+        CustomOverlayManager.INSTANCE.extractRenderState(graphics, mouseX, mouseY, deltaTracker.getGameTimeDeltaTicks());
     }
 }

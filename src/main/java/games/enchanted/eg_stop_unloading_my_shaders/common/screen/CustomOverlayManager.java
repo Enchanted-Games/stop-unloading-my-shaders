@@ -1,6 +1,6 @@
 package games.enchanted.eg_stop_unloading_my_shaders.common.screen;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.texture.TickableTexture;
@@ -16,8 +16,8 @@ public class CustomOverlayManager implements Renderable, TickableTexture {
     private static final List<CustomOverlay> customOverlays = List.of(SHADER_MESSAGE_OVERLAY);
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        customOverlays.forEach(customOverlay -> customOverlay.render(guiGraphics, mouseX, mouseY, partialTick));
+    public void extractRenderState(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        customOverlays.forEach(customOverlay -> customOverlay.extractRenderState(guiGraphics, mouseX, mouseY, partialTick));
     }
 
     @Override
