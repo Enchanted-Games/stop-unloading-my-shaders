@@ -9,6 +9,8 @@
 
   "debug.eg_stop_unloading_my_shaders.reloading_shaders": "Reloading shaders",
 
+  "key.eg_stop_unloading_my_shaders.reload_shaders": "[SUMR] Reload Shaders",
+
   "debug.eg_stop_unloading_my_shaders.post_chain_load_error": "Failed to load post_effect %s:",
   "debug.eg_stop_unloading_my_shaders.no_post_chain_source_error": "Couldn't find config .json for post_effect: %s",
   "debug.eg_stop_unloading_my_shaders.linkage_error": "Failed to link programs for pipeline %s:",
