@@ -14,12 +14,7 @@ import org.spongepowered.asm.mixin.Shadow;
 // targets the inner GlslPreprocessor class in createPreprocessor
 @Mixin(targets = "net.minecraft.client.renderer.ShaderManager$1")
 public class ShaderManagerPreprocessorMixin {
-    //? if fabric {
     @Shadow @Final Identifier val$parentLocation;
-    //? } else {
-    /*@Shadow @Final Identifier val$identifier;
-    *///? }
-
 
     @WrapMethod(
         method = "applyImport"
@@ -27,13 +22,7 @@ public class ShaderManagerPreprocessorMixin {
     public String eg_sumr$catchImportErrors(boolean useFullPath, String directory, Operation<String> original) {
         Identifier absoluteShaderLocation;
         if (useFullPath) {
-            absoluteShaderLocation =
-                //? if fabric {
-                val$parentLocation
-                //? } else {
-                /*val$identifier
-                *///? }
-                .withPath(parent -> FileUtil.normalizeResourcePath(parent + directory));
+            absoluteShaderLocation = val$parentLocation.withPath(parent -> FileUtil.normalizeResourcePath(parent + directory));
         } else {
             try {
                 absoluteShaderLocation = Identifier.parse(directory).withPrefix("shaders/include/");

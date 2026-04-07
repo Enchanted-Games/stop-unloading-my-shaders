@@ -1,7 +1,7 @@
 //? if neoforge {
 /*package games.enchanted.eg_stop_unloading_my_shaders.neoforge;
 
-import games.enchanted.eg_stop_unloading_my_shaders.common.ModEntry;
+import games.enchanted.eg_stop_unloading_my_shaders.common.SUMRMod;
 import games.enchanted.eg_stop_unloading_my_shaders.common.config.ConfigScreen;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.fml.ModLoadingContext;
@@ -14,7 +14,7 @@ import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 @Mod(value = "eg_stop_unloading_my_shaders", dist = Dist.CLIENT)
 public class NeoForgeEntry {
     public NeoForgeEntry() {
-        ModEntry.init();
+        SUMRMod.init();
 
         ModLoadingContext.get().registerExtensionPoint(IConfigScreenFactory.class, () -> (client, parent) -> ConfigScreen.createConfigScreen(parent));
     }
