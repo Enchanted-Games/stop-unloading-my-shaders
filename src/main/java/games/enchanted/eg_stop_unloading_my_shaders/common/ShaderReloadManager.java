@@ -27,10 +27,7 @@ public abstract class ShaderReloadManager {
         CustomOverlayManager.SHADER_MESSAGE_OVERLAY.clear();
 
         if(!ModConstants.isBackendHandled()) {
-            GpuDeviceBackend backend = ((GpuDeviceAccessor) RenderSystem.getDevice()).eg_sumr$getBackend();
-            String deviceBackendName = backend.getClass().getCanonicalName();
-            Logging.error("GpuDeviceBackend implementation '{}' not handled by SUMR", deviceBackendName);
-            ShaderReloadManager.showErrorMessage(Component.translatableWithFallback("config.eg_stop_unloading_my_shaders.unhandled_backend", "_Don't know how to handle current gpu backend: '%s'", deviceBackendName));
+            showUnknownDeviceErrors();
             return;
         }
 
@@ -54,11 +51,21 @@ public abstract class ShaderReloadManager {
         }));
     }
 
+    public static void showUnknownDeviceErrors() {
+        if(!ModConstants.isBackendHandled()) {
+            GpuDeviceBackend backend = ((GpuDeviceAccessor) RenderSystem.getDevice()).eg_sumr$getBackend();
+            String deviceBackendName = backend.getClass().getCanonicalName();
+            Logging.error("GpuDeviceBackend implementation '{}' not handled by SUMR", deviceBackendName);
+            ShaderReloadManager.showErrorMessage(Component.translatableWithFallback("config.eg_stop_unloading_my_shaders.unhandled_backend", "_Don't know how to handle current gpu backend: '%s'", deviceBackendName), 1500);
+        }
+    }
+
     public static void showReloadingShadersMessage() {
         showMessage(Messages.getReloadingShadersMessage(), 200);
     }
 
     protected static void setCollapsedMessages() {
+        if(!ModConstants.isBackendHandled()) return;
         CustomOverlayManager.SHADER_MESSAGE_OVERLAY.setMessagesToShowWhenCollapsed(List.of(
             Messages.appendMessagePrefix(Messages.MessagePrefix.SUMR, Component.translatableWithFallback("info.eg_stop_unloading_my_shaders.shader_errors", "_There are some shader errors!")),
             Messages.appendMessagePrefix(Messages.MessagePrefix.NONE, Component.translatableWithFallback("info.eg_stop_unloading_my_shaders.click_to_show_errors", "_Click here to show or F3 + R to reload shaders").withColor(CommonColors.LIGHT_GRAY))
@@ -79,7 +86,11 @@ public abstract class ShaderReloadManager {
     }
 
     public static void showErrorMessage(Component message) {
-        showMessage(Messages.appendMessagePrefix(Messages.MessagePrefix.ERROR, message));
+        showErrorMessage(Messages.appendMessagePrefix(Messages.MessagePrefix.ERROR, message), -1);
+    }
+
+    public static void showErrorMessage(Component message, int ticksVisible) {
+        showMessage(Messages.appendMessagePrefix(Messages.MessagePrefix.ERROR, message), ticksVisible);
     }
 
     public static void showContinuationErrorMessage(Component message) {
@@ -121,6 +132,9 @@ public abstract class ShaderReloadManager {
         if(isHotReloading) return;
         clearKnownErrors();
         setCollapsedMessages();
+        if(!ModConstants.isBackendHandled()) {
+            showUnknownDeviceErrors();
+        }
     }
 
     public static void startedVanillaReload() {
