@@ -23,7 +23,7 @@ public abstract class CustomOverlayMouseEventsMixin {
     @Shadow @Final private Minecraft minecraft;
 
     @Inject(
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;getOverlay()Lnet/minecraft/client/gui/screens/Overlay;"),
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;overlay()Lnet/minecraft/client/gui/screens/Overlay;"),
         method = "onScroll",
         cancellable = true
     )
@@ -35,7 +35,7 @@ public abstract class CustomOverlayMouseEventsMixin {
     }
 
     @Inject(
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/Minecraft;getOverlay()Lnet/minecraft/client/gui/screens/Overlay;"),
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/Gui;overlay()Lnet/minecraft/client/gui/screens/Overlay;"),
         method = "onButton",
         cancellable = true
     )

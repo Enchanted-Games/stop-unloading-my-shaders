@@ -22,7 +22,7 @@ public class CustomOverlayRendererMixin {
     @Shadow @Final private GuiRenderer guiRenderer;
 
     @Inject(
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/render/GuiRenderer;render(Lcom/mojang/blaze3d/buffers/GpuBufferSlice;)V"),
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/render/GuiRenderer;render()V"),
         method = "render"
     )
     private void eg_sumr$renderCustomOverlay(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {

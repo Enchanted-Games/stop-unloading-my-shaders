@@ -1,8 +1,13 @@
 package games.enchanted.eg_stop_unloading_my_shaders.common;
 
+import com.mojang.blaze3d.systems.GpuDeviceBackend;
+import com.mojang.blaze3d.systems.RenderSystem;
+import games.enchanted.eg_stop_unloading_my_shaders.common.duck.GpuDeviceAdditions;
+import games.enchanted.eg_stop_unloading_my_shaders.common.mixin.accessor.GpuDeviceAccessor;
 import games.enchanted.eg_stop_unloading_my_shaders.common.mixin.accessor.ShaderManagerAccessor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderManager;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.VanillaPackResources;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
@@ -31,6 +36,10 @@ public class ModConstants {
         /*"neoforge"
      *///?}
     ;
+    public static boolean isBackendHandled() {
+        GpuDeviceBackend backend = ((GpuDeviceAccessor) RenderSystem.getDevice()).eg_sumr$getBackend();
+        return backend instanceof GpuDeviceAdditions;
+    }
 
     private static ShaderManager.Configs vanillaShaderConfigs;
 

@@ -83,8 +83,7 @@ public class ConfigScreen extends Screen {
     @Override
     public void onClose() {
         ConfigManager.logCurrentConfig();
-        assert this.minecraft != null;
-        this.minecraft.setScreen(parent);
+        this.minecraft.setScreenAndShow(parent);
     }
 
     public static Screen createConfigScreen(Screen parent) {

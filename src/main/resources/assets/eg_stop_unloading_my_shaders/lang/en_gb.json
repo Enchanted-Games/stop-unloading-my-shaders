@@ -23,6 +23,9 @@
   "debug.eg_stop_unloading_my_shaders.no_full_error": "Couldn't get full error message",
 
 
+  "config.eg_stop_unloading_my_shaders.unhandled_backend": "Don't know how to handle current gpu backend: '%s'",
+
+
   "gui.eg_stop_unloading_my_shaders.button.log_mode": "Log messages to: %s",
   "gui.eg_stop_unloading_my_shaders.button.log_mode.tooltip": "Box: Logs messages to a box in the top left of the screen, visible everywhere.\nChat: Logs messages to the in-game chat, only visible in a world.\nBoth: Logs messages to the box and chat",
 

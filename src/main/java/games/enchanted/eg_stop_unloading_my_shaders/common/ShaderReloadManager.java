@@ -1,6 +1,10 @@
 package games.enchanted.eg_stop_unloading_my_shaders.common;
 
+import com.mojang.blaze3d.systems.GpuDeviceBackend;
+import com.mojang.blaze3d.systems.RenderSystem;
 import games.enchanted.eg_stop_unloading_my_shaders.common.config.ConfigManager;
+import games.enchanted.eg_stop_unloading_my_shaders.common.duck.GpuDeviceAdditions;
+import games.enchanted.eg_stop_unloading_my_shaders.common.mixin.accessor.GpuDeviceAccessor;
 import games.enchanted.eg_stop_unloading_my_shaders.common.screen.CustomOverlayManager;
 import games.enchanted.eg_stop_unloading_my_shaders.common.translations.Messages;
 import net.minecraft.client.Minecraft;
@@ -20,8 +24,17 @@ public abstract class ShaderReloadManager {
     private static final List<ShaderLogMessage> knownErrorsThisReload = new ArrayList<>();
 
     public static void triggerReload() {
-        isHotReloading = true;
         CustomOverlayManager.SHADER_MESSAGE_OVERLAY.clear();
+
+        if(!ModConstants.isBackendHandled()) {
+            GpuDeviceBackend backend = ((GpuDeviceAccessor) RenderSystem.getDevice()).eg_sumr$getBackend();
+            String deviceBackendName = backend.getClass().getCanonicalName();
+            Logging.error("GpuDeviceBackend implementation '{}' not handled by SUMR", deviceBackendName);
+            ShaderReloadManager.showErrorMessage(Component.translatableWithFallback("config.eg_stop_unloading_my_shaders.unhandled_backend", "_Don't know how to handle current gpu backend: '%s'", deviceBackendName));
+            return;
+        }
+
+        isHotReloading = true;
         showReloadingShadersMessage();
         setCollapsedMessages();
         Minecraft minecraft = Minecraft.getInstance();
@@ -88,7 +101,7 @@ public abstract class ShaderReloadManager {
     public static void showMessage(Component message, int ticksVisible) {
         Minecraft.getInstance().execute(() -> {
             if(ConfigManager.loggingMode.showInChat()) {
-                Minecraft.getInstance().gui.getChat().addServerSystemMessage(message);
+                Minecraft.getInstance().gui.hud.getChat().addServerSystemMessage(message);
             }
             if(!ConfigManager.loggingMode.showInBox()) return;
             if(ticksVisible > 0) {

@@ -26,7 +26,12 @@ repositories {
 dependencies {
     minecraft("com.mojang:minecraft:${property("deps.minecraft")}")
     implementation("net.fabricmc:fabric-loader:${property("deps.fabric-loader")}")
-    implementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")
+
+    if(hasProperty("deps.fabric-api")) {
+        implementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")
+    } else {
+        compileOnly("net.fabricmc.fabric-api:fabric-api:0.145.4+26.1.1")
+    }
 
     // Mod Menu
     if (hasProperty("deps.modmenu")) {
@@ -69,7 +74,8 @@ tasks.named<ProcessResources>("processResources") {
         this["icon"] = prop("mod.icon")
         this["license"] = prop("mod.license")
         this["fabric_loader_dep_str"] = prop("dep_str.fabric-loader")
-        this["fabric_api_dep_str"] = prop("dep_str.fabric-api")
+        // TODO: reenable fapi dep
+//        this["fabric_api_dep_str"] = prop("dep_str.fabric-api")
         this["java_ver"] = java.targetCompatibility.majorVersion
     }
 

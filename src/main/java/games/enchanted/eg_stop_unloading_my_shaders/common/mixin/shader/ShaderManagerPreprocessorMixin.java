@@ -3,8 +3,8 @@ package games.enchanted.eg_stop_unloading_my_shaders.common.mixin.shader;
 import com.llamalad7.mixinextras.injector.wrapmethod.WrapMethod;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import games.enchanted.eg_stop_unloading_my_shaders.common.Logging;
+import games.enchanted.eg_stop_unloading_my_shaders.common.ModConstants;
 import net.minecraft.IdentifierException;
-import net.minecraft.client.renderer.ShaderManager;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.FileUtil;
 import org.spongepowered.asm.mixin.Final;
@@ -20,6 +20,10 @@ public class ShaderManagerPreprocessorMixin {
         method = "applyImport"
     )
     public String eg_sumr$catchImportErrors(boolean useFullPath, String directory, Operation<String> original) {
+        if(!ModConstants.isBackendHandled()) {
+            return original.call(useFullPath, directory);
+        }
+
         Identifier absoluteShaderLocation;
         if (useFullPath) {
             absoluteShaderLocation = val$parentLocation.withPath(parent -> FileUtil.normalizeResourcePath(parent + directory));

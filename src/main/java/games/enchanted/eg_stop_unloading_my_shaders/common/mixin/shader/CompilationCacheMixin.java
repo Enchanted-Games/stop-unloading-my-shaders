@@ -3,6 +3,7 @@ package games.enchanted.eg_stop_unloading_my_shaders.common.mixin.shader;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import games.enchanted.eg_stop_unloading_my_shaders.common.Logging;
+import games.enchanted.eg_stop_unloading_my_shaders.common.ModConstants;
 import games.enchanted.eg_stop_unloading_my_shaders.common.ShaderReloadManager;
 import games.enchanted.eg_stop_unloading_my_shaders.common.translations.Messages;
 import games.enchanted.eg_stop_unloading_my_shaders.common.util.PostChainUtil;
@@ -26,6 +27,10 @@ public class CompilationCacheMixin {
         method = "loadPostChain"
     )
     private PostChain eg_sumr$loadDummyPostChainIfError(PostChainConfig pass, TextureManager textureManager, Set<Identifier> config, Identifier name, Projection allowedExternalTargets, ProjectionMatrixBuffer id, Operation<PostChain> original) {
+        if(!ModConstants.isBackendHandled()) {
+            return original.call(pass, textureManager, config, name, allowedExternalTargets, id);
+        }
+
         PostChain originalChain;
         try {
             originalChain = original.call(pass, textureManager, config, name, allowedExternalTargets, id);
@@ -44,6 +49,11 @@ public class CompilationCacheMixin {
     )
     private <V> V eg_sumr$loadDummyPostChainIfNoConfig(Map<Identifier, PostChain> instance, Object key, Operation<V> original) {
         V originalConfig = original.call(instance, key);
+
+        if(!ModConstants.isBackendHandled()) {
+            return originalConfig;
+        }
+
         if(originalConfig == null) {
             ShaderReloadManager.showErrorMessage(Messages.getCouldntFindPostChainSource(key.toString()));
             //noinspection unchecked

@@ -57,12 +57,12 @@ public class ShaderManagerMixin {
     )
     private CompiledRenderPipeline eg_sumr$wrapPipelineCompilation(GpuDevice device, RenderPipeline renderPipeline, ShaderSource shaderSource, Operation<CompiledRenderPipeline> original) {
         CompiledRenderPipeline compiled = original.call(device, renderPipeline, shaderSource);
-        if(compiled.isValid()) return compiled;
+        if(compiled.isValid() || !ModConstants.isBackendHandled()) return compiled;
 
         GpuDeviceBackend backend = ((GpuDeviceAccessor) device).eg_sumr$getBackend();
 
         if(!(backend instanceof GpuDeviceAdditions deviceAdditions)) {
-            Logging.error("GpuDeviceBackend implementation '{}' not handled by SUMR", device.getClass().getCanonicalName());
+            Logging.error("GpuDeviceBackend implementation '{}' not handled by SUMR", backend.getClass().getCanonicalName());
             return compiled;
         }
 
@@ -79,6 +79,8 @@ public class ShaderManagerMixin {
     )
     private static void eg_sumr$addDummyPostChainConfigIfFailedToParse(Logger instance, String string, Object o, Object exception, Operation<Void> original, Identifier rawLocation, Resource postChain, ImmutableMap.Builder<Identifier, PostChainConfig> output, @Local(ordinal = 1) Identifier name) {
         original.call(instance, string, o, exception);
+        if(!ModConstants.isBackendHandled()) return;
+
         output.put(name, PostChainUtil.createDummyPostChainConfig());
         ShaderReloadManager.showErrorMessage(Messages.getFailedToLoadPostChainMessage(name.toString()));
         ShaderReloadManager.showContinuationErrorMessage(Component.literal(((Exception) exception).getMessage()));
@@ -89,6 +91,10 @@ public class ShaderManagerMixin {
         method = "loadShader"
     )
     private static List<String> eg_sumr$wrapShaderPreprocessError(GlslPreprocessor instance, String shaderData, Operation<List<String>> original, Identifier shaderID) {
+        if(!ModConstants.isBackendHandled()) {
+            return original.call(instance, shaderData);
+        }
+
         try {
             return original.call(instance, shaderData);
         } catch (Exception e) {
