@@ -1,4 +1,4 @@
-# 1.4.1
+# 1.5.0
 
-- Update to full release 26.1
-- Ported to Neoforge 26.1
+- Ported to 26.2-snapshot-1
+- Added support for the new Vulkan backend

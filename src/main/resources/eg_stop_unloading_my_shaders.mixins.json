@@ -17,7 +17,8 @@
     "shader.ShaderManagerMixin",
     "shader.ShaderManagerPreprocessorMixin",
     "shader.gl.GlDeviceMixin",
-    "shader.gl.GlProgramMixin"
+    "shader.gl.GlProgramMixin",
+    "shader.vk.VulkanDeviceMixin"
   ],
   "injectors": {
     "defaultRequire": 1
