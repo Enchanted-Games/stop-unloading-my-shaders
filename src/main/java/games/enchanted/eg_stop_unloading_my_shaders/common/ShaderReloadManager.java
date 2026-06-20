@@ -86,7 +86,7 @@ public abstract class ShaderReloadManager {
     }
 
     public static void showErrorMessage(Component message) {
-        showErrorMessage(Messages.appendMessagePrefix(Messages.MessagePrefix.ERROR, message), -1);
+        showErrorMessage(message, -1);
     }
 
     public static void showErrorMessage(Component message, int ticksVisible) {

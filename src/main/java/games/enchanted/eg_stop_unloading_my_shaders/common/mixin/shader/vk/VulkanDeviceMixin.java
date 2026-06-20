@@ -77,9 +77,9 @@ public class VulkanDeviceMixin implements GpuDeviceAdditions {
         method = "compileShader"
     )
     private void eg_sumr$showFailedToCompileShaderMessage(Logger instance, String string, Object[] objects, Operation<Void> original) {
-        if(objects[1] instanceof Identifier location && objects[0] instanceof String typeName && objects[2] instanceof String compilationMessage) {
+        if(objects[1] instanceof Identifier location && objects[0] instanceof ShaderType type && objects[2] instanceof String compilationMessage) {
             ShaderReloadManager.showShaderErrorMessage(
-                Messages.getCouldntCompileShaderMessage(typeName, location.toString()),
+                Messages.getCouldntCompileShaderMessage(type.getName(), location.toString()),
                 Component.literal(compilationMessage)
             );
         } else {
