@@ -1,26 +1,19 @@
 package games.enchanted.eg_stop_unloading_my_shaders.common;
 
+import com.mojang.blaze3d.shaders.ShaderSource;
 import com.mojang.blaze3d.systems.GpuDeviceBackend;
 import com.mojang.blaze3d.systems.RenderSystem;
 import games.enchanted.eg_stop_unloading_my_shaders.common.duck.GpuDeviceAdditions;
 import games.enchanted.eg_stop_unloading_my_shaders.common.mixin.accessor.GpuDeviceAccessor;
 import games.enchanted.eg_stop_unloading_my_shaders.common.mixin.accessor.ShaderManagerAccessor;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderManager;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.VanillaPackResources;
 import net.minecraft.server.packs.resources.MultiPackResourceManager;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.InactiveProfiler;
-
-//? if fabric {
-import net.fabricmc.loader.api.FabricLoader;
-//?} else {
-/*import net.neoforged.fml.loading.FMLPaths;
-*///?}
-
-import com.mojang.blaze3d.shaders.ShaderSource;
 
 import java.nio.file.Path;
 import java.util.List;
@@ -52,9 +45,9 @@ public class ModConstants {
         return vanillaShaderConfigs;
     }
 
-    public static ShaderSource getVanillaShaderSource() {
+    public static ShaderSource getFallbackShaderSource() {
         ShaderManager.Configs configs = getVanillaShaderConfigs();
-        return (identifier, shaderType) -> configs.shaderSources().get(new ShaderManager.ShaderSourceKey(identifier, shaderType));
+        return (identifier, type) -> configs.shaderSources().get(new ShaderManager.ShaderSourceKey(identifier, type));
     }
 
     /**

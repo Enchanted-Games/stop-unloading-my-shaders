@@ -67,7 +67,7 @@ public class ShaderManagerMixin {
         }
 
         deviceAdditions.eg_sumr$setBypassPipelineCache(true);
-        CompiledRenderPipeline vanillaCompiled = original.call(device, renderPipeline, ModConstants.getVanillaShaderSource());
+        CompiledRenderPipeline vanillaCompiled = original.call(device, renderPipeline, ModConstants.getFallbackShaderSource());
         deviceAdditions.eg_sumr$setBypassPipelineCache(false);
         return vanillaCompiled;
     }
