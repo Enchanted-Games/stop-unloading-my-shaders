@@ -85,8 +85,7 @@ tasks.named<ProcessResources>("processResources") {
         this["issue_tracker"] = prop("mod.issue_tracker")
         this["icon"] = prop("mod.icon")
         this["license"] = prop("mod.license")
-        this["fabric_loader_dep_str"] = prop("dep_str.fabric-loader")
-        this["fabric_api_dep_str"] = prop("dep_str.fabric-api")
+        this["fabric_loader_dep_str"] = "*"
         this["java_ver"] = java.targetCompatibility.majorVersion
     }
 

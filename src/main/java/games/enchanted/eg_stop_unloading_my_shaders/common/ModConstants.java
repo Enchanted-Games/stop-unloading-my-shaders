@@ -6,7 +6,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import games.enchanted.eg_stop_unloading_my_shaders.common.duck.GpuDeviceAdditions;
 import games.enchanted.eg_stop_unloading_my_shaders.common.mixin.accessor.GpuDeviceAccessor;
 import games.enchanted.eg_stop_unloading_my_shaders.common.mixin.accessor.ShaderManagerAccessor;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.ShaderManager;
 import net.minecraft.server.packs.PackType;
@@ -17,6 +16,12 @@ import net.minecraft.util.profiling.InactiveProfiler;
 
 import java.nio.file.Path;
 import java.util.List;
+
+//? if fabric {
+import net.fabricmc.loader.api.FabricLoader;
+//? } else {
+/*import net.neoforged.fml.loading.FMLPaths;
+*///? }
 
 public class ModConstants {
     public static final String MOD_NAME = "Stop Unloading My Shaders";

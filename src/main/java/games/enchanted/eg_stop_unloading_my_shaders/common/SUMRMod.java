@@ -24,8 +24,7 @@ public class SUMRMod {
 
     public static void registerKeybinds() {
         //? if fabric {
-        // TODO: reenable when fapi is available
-//        KeyMappingHelper.registerKeyMapping(HOT_RELOAD_KEYBIND);
+        KeyMappingHelper.registerKeyMapping(HOT_RELOAD_KEYBIND);
         //? }
     }
 }
