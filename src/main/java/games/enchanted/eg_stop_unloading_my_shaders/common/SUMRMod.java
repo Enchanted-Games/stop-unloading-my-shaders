@@ -10,7 +10,7 @@ import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 public class SUMRMod {
     public static final KeyMapping HOT_RELOAD_KEYBIND = new KeyMapping(
         "key.eg_stop_unloading_my_shaders.reload_shaders",
-        InputConstants.Type.KEYSYM,
+        InputConstants.Type.KEYBOARD,
         InputConstants.KEY_R,
         KeyMapping.Category.DEBUG
     );

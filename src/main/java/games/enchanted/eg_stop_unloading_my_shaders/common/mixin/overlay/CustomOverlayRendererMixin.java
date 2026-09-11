@@ -22,8 +22,8 @@ public class CustomOverlayRendererMixin {
     @Shadow @Final private GuiRenderer guiRenderer;
 
     @Inject(
-        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/render/GuiRenderer;render()V"),
-        method = "render"
+        at = @At(value = "TAIL"),
+        method = "extract"
     )
     private void eg_sumr$renderCustomOverlay(DeltaTracker deltaTracker, boolean renderLevel, CallbackInfo ci) {
         if(!this.minecraft.isGameLoadFinished()) return;

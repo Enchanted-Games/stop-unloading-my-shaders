@@ -4,7 +4,6 @@ import games.enchanted.eg_stop_unloading_my_shaders.common.SUMRMod;
 import games.enchanted.eg_stop_unloading_my_shaders.common.ShaderReloadManager;
 import net.minecraft.client.KeyboardHandler;
 import net.minecraft.client.input.KeyEvent;
-import org.lwjgl.glfw.GLFW;
 import org.objectweb.asm.Opcodes;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

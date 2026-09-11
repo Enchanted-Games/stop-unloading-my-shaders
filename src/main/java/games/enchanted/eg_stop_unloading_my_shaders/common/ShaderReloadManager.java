@@ -1,9 +1,8 @@
 package games.enchanted.eg_stop_unloading_my_shaders.common;
 
-import com.mojang.blaze3d.systems.GpuDeviceBackend;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.renderpearl.backend.api.GpuDeviceBackend;
 import games.enchanted.eg_stop_unloading_my_shaders.common.config.ConfigManager;
-import games.enchanted.eg_stop_unloading_my_shaders.common.duck.GpuDeviceAdditions;
 import games.enchanted.eg_stop_unloading_my_shaders.common.mixin.accessor.GpuDeviceAccessor;
 import games.enchanted.eg_stop_unloading_my_shaders.common.screen.CustomOverlayManager;
 import games.enchanted.eg_stop_unloading_my_shaders.common.translations.Messages;
