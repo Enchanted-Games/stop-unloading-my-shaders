@@ -8,6 +8,7 @@
     "Enchanted_Games"
   ],
   "contact": {
+    "homepage": "${website_url}",
     "sources": "${source_url}",
     "issues": "${issue_tracker}"
   },
@@ -15,17 +16,14 @@
   "icon": "${icon}",
   "environment": "client",
   "entrypoints": {
-    "main": [
-      "games.enchanted.${id}.fabric.FabricCommonEntry"
-    ],
     "client": [
-      "games.enchanted.${id}.fabric.FabricClientEntry"
+      "${group}.${id}.fabric.FabricEntry"
     ],
     "modmenu": [
-      "games.enchanted.${id}.fabric.ModMenuIntegration"
+      "${group}.${id}.fabric.ModMenuIntegration"
     ]
   },
-  "accessWidener": "${id}.accesswidener",
+  ${accesswidener_field}
   "mixins": [
     {
       "config": "${id}.mixins.json"
@@ -33,6 +31,7 @@
   ],
   "depends": {
     "minecraft": "${minecraft}",
-    "fabricloader": "${fabric_loader_dep_str}"
+    "fabricloader": "${fabric_loader_dep_str}",
+    "fabric-api": "${fabric_api_dep_str}"
   }
 }

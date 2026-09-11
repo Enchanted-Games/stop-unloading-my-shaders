@@ -1,4 +1,8 @@
 @file:Suppress("UnstableApiUsage")
+@file:OptIn(StonecutterExperimentalAPI::class)
+
+import dev.kikugie.stonecutter.StonecutterExperimentalAPI
+
 
 plugins {
     id("net.fabricmc.fabric-loom-remap")
@@ -6,11 +10,18 @@ plugins {
     id("maven-publish")
 }
 
+stonecutter {
+    val (version, loader) = current.project.split('-', limit = 2)
+    properties.tags(version, loader)
+}
+
 val minecraft = stonecutter.current.version
 val mcVersion = stonecutter.current.project.substringBeforeLast('-')
+val classTweakerFilepath = "src/main/resources/${sc.properties.get<String>("mod.id")}.classtweaker"
 
-version = "${property("mod.version")}+${property("deps.minecraft")}-fabric"
-base.archivesName = property("mod.id") as String
+val rawModVersion: String = sc.properties["mod.version"]
+version = "$rawModVersion+${sc.properties.get<String>("deps.minecraft")}-fabric"
+base.archivesName = sc.properties.get<String>("mod.id")
 
 repositories {
     mavenLocal()
@@ -38,31 +49,29 @@ repositories {
 }
 
 dependencies {
-    minecraft("com.mojang:minecraft:${property("deps.minecraft")}")
+    minecraft("com.mojang:minecraft:${sc.properties.get<String>("deps.minecraft")}")
     mappings(loom.layered {
         officialMojangMappings()
         if (hasProperty("deps.parchment"))
-            parchment("org.parchmentmc.data:parchment-${property("deps.parchment")}@zip")
+            parchment("org.parchmentmc.data:parchment-${sc.properties.get<String>("deps.parchment")}@zip")
         if (hasProperty("deps.mojbackward"))
-            mappings("dev.lambdaurora:yalmm-mojbackward:${property("deps.minecraft")}+build.${property("deps.mojbackward")}")
+            mappings("dev.lambdaurora:yalmm-mojbackward:${sc.properties.get<String>("deps.minecraft")}+build.${sc.properties.get<String>("deps.mojbackward")}")
     })
-    modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric-loader")}")
-    modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric-api")}")
+    modImplementation("net.fabricmc:fabric-loader:${sc.properties.get<String>("deps.fabric-loader")}")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${sc.properties.get<String>("deps.fabric-api")}")
 
     // Mod Menu
     if (hasProperty("deps.modmenu")) {
-        modCompileOnly("com.terraformersmc:modmenu:${property("deps.modmenu")}")
-        modLocalRuntime("com.terraformersmc:modmenu:${property("deps.modmenu")}")
+        modApi("com.terraformersmc:modmenu:${sc.properties.get<String>("deps.modmenu")}")
     } else {
         modCompileOnly("com.terraformersmc:modmenu:15.0.0-beta.3")
     }
 }
 
-stonecutter {
-}
-
 loom {
-    accessWidenerPath = project.file("src/main/resources/${property("mod.id")}.accesswidener")
+    if(project.file(classTweakerFilepath).exists()) {
+        accessWidenerPath = project.file(classTweakerFilepath)
+    }
 
     runConfigs.all {
         runDir = "../../run"
@@ -72,19 +81,21 @@ loom {
 
 configurations.all {
     resolutionStrategy {
-        force("net.fabricmc:fabric-loader:${property("deps.fabric-loader")}")
+        force("net.fabricmc:fabric-loader:${sc.properties.get<String>("deps.fabric-loader")}")
     }
 }
 
 tasks.named<ProcessResources>("processResources") {
-    fun prop(name: String) = project.property(name) as String
+    fun prop(name: String): String = sc.properties[name]
 
     val props = HashMap<String, String>().apply {
         this["version"] = prop("mod.version") + "+" + prop("deps.minecraft")
         this["minecraft"] = prop("dep_str.minecraft")
         this["id"] = prop("mod.id")
+        this["group"] = prop("mod.group")
         this["description"] = prop("mod.description")
         this["name"] = prop("mod.name")
+        this["website_url"] = prop("mod.website_url")
         this["source_url"] = prop("mod.source_url")
         this["issue_tracker"] = prop("mod.issue_tracker")
         this["icon"] = prop("mod.icon")
@@ -92,6 +103,12 @@ tasks.named<ProcessResources>("processResources") {
         this["fabric_loader_dep_str"] = prop("dep_str.fabric-loader")
         this["fabric_api_dep_str"] = prop("dep_str.fabric-api")
         this["java_ver"] = java.targetCompatibility.majorVersion
+    }
+
+    if(project.file(classTweakerFilepath).exists()) {
+        props["accesswidener_field"] = "\"accessWidener\": \"${prop("mod.id")}.classtweaker\","
+    } else {
+        props["accesswidener_field"] = ""
     }
 
     filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/mods.toml", "*.mixins.json")) {
@@ -105,13 +122,13 @@ tasks.named("processResources") {
 
 tasks {
     processResources {
-        exclude("**/neoforge.mods.toml", "**/mods.toml")
+        exclude("**/neoforge.mods.toml", "**/mods.toml", "**/accesstransformer.cfg", "neoforge.mods.toml", "mods.toml", "accesstransformer.cfg")
     }
 
     register<Copy>("buildAndCollect") {
         group = "build"
         from(remapJar.map { it.archiveFile })
-        into(rootProject.layout.buildDirectory.file("libs/${project.property("mod.version")}"))
+        into(rootProject.layout.buildDirectory.file("libs/${rawModVersion}"))
         dependsOn("build")
     }
 }
@@ -136,12 +153,12 @@ val additionalVersions: List<String> = additionalVersionsStr
 
 publishMods {
     file = tasks.remapJar.map { it.archiveFile.get() }
-    additionalFiles.from(tasks.remapSourcesJar.map { it.archiveFile.get() })
+    additionalFiles.from(tasks.named<org.gradle.jvm.tasks.Jar>("sourcesJar").map { it.archiveFile.get() })
 
     // one of BETA, ALPHA, STABLE
     type = STABLE
-    displayName = "[Fabric] v${property("mod.version")} for mc ${stonecutter.current.version}"
-    version = "${property("mod.version")}+${property("deps.minecraft")}-fabric"
+    displayName = "[Fabric] v${rawModVersion} for mc ${sc.properties.get<String>("deps.minecraft")}"
+    version = project.version.toString()
     changelog = provider { rootProject.file("CHANGELOG.md").readText() }
     modLoaders.add("fabric")
 
@@ -149,22 +166,25 @@ publishMods {
 
     if(hasProperty("publish.modrinth")) {
         modrinth {
-            projectId = property("publish.modrinth") as String
+            projectId = sc.properties.get<String>("publish.modrinth")
             accessToken = env.MODRINTH_API_KEY.orNull()
-            minecraftVersions.add(property("deps.minecraft").toString())
+            minecraftVersions.add(sc.properties.get<String>("deps.minecraft"))
             minecraftVersions.addAll(additionalVersions)
             requires("fabric-api")
             optional("modmenu")
+            environment = CLIENT_ONLY
         }
     }
 
     if(hasProperty("publish.curseforge")) {
         curseforge {
-            projectId = property("publish.curseforge") as String
+            projectId = sc.properties.get<String>("publish.curseforge") as String
             accessToken = env.CURSEFORGE_API_KEY.orNull()
             minecraftVersions.add(stonecutter.current.version)
             minecraftVersions.addAll(additionalVersions)
             requires("fabric-api")
+            client = true
+            server = false
         }
     }
 }
@@ -178,5 +198,5 @@ fun boolProperty(key: String) : Boolean {
     if(!hasProperty(key)){
         return false
     }
-    return bool(property(key).toString())
+    return bool(sc.properties.get<String>(key))
 }

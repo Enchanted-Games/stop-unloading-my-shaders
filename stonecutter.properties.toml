@@ -1,0 +1,35 @@
+[mod]
+id = "eg_stop_unloading_my_shaders"
+name = "Stop Unloading My Resourcepacks"
+description = "Prevents the game from disabling all resourcepacks if a shader-related error occurs. Instead, errors will be displayed in-game"
+group = "games.enchanted"
+version = "1.5.1"
+license = "CC BY-NC 4.0"
+website_url = "https://enchanted.games/"
+source_url = "https://github.com/Enchanted-Games/stop-unloading-my-shaders"
+issue_tracker = "https://github.com/Enchanted-Games/stop-unloading-my-shaders/issues"
+icon = "assets/eg_stop_unloading_my_shaders/icon.png"
+
+# neoforge versions: https://projects.neoforged.net/neoforged/neoforge
+# fabric versions: https://fabricmc.net/develop/
+
+[fabric]
+deps.fabric-loader = "0.19.3"
+dep_str.fabric-loader = ">=0.19"
+
+
+["26.3"]
+deps.minecraft = "26.3-rc-1"
+
+[fabric."26.3"]
+dep_str.minecraft = ">=26.2-rc.1"
+
+deps.fabric-api = "0.160.4+26.3"
+dep_str.fabric-api = ">=0.160.4+26.3"
+
+deps.modmenu = "20.0.0-beta.4"
+
+[neoforge."26.3"]
+dep_str.minecraft = "(26.2,26.4)"
+
+deps.neoforge = "26.2.0.59"

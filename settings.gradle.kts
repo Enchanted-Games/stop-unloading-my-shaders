@@ -14,7 +14,7 @@ pluginManagement {
 }
 
 plugins {
-    id("dev.kikugie.stonecutter") version "0.8"
+    id("dev.kikugie.stonecutter") version "0.9.2"
     id("org.gradle.toolchains.foojay-resolver-convention") version "0.9.0"
 }
 
@@ -22,14 +22,16 @@ stonecutter {
     create(rootProject) {
         fun ver(version: String, vararg loaders: String) = loaders
             .forEach {
-                version("$version-${it.replace("_remap", "")}", version).buildscript = "build.$it.gradle.kts"
+                val loaderName = it.replace("_remap", "")
+                version("$version-${loaderName}", version).buildscript = "build.$it.gradle.kts"
             }
 
-        ver("26.2", "fabric", "neoforge")
+        // use fabric_remap as the loader for obfuscated minecraft versions (1.21.11 or below)
 
-        vcsVersion = "26.2-fabric"
+        ver("26.3", "fabric")
+
+        vcsVersion = "26.3-fabric"
     }
 }
 
 rootProject.name = "eg_stop_unloading_my_shaders"
-
