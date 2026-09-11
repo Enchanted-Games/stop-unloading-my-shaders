@@ -1,112 +1,31 @@
 package games.enchanted.eg_stop_unloading_my_shaders.common.mixin.shader;
 
-import com.google.common.collect.ImmutableMap;
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.renderpearl.api.device.GpuDevice;
-import com.mojang.renderpearl.api.pipeline.CompiledRenderPipeline;
-import com.mojang.renderpearl.api.pipeline.RenderPipeline;
-import com.mojang.renderpearl.api.pipeline.ShaderSource;
-import com.mojang.renderpearl.backend.api.GpuDeviceBackend;
-import games.enchanted.eg_stop_unloading_my_shaders.common.Logging;
-import games.enchanted.eg_stop_unloading_my_shaders.common.ModConstants;
 import games.enchanted.eg_stop_unloading_my_shaders.common.ShaderReloadManager;
-import games.enchanted.eg_stop_unloading_my_shaders.common.duck.GpuDeviceAdditions;
-import games.enchanted.eg_stop_unloading_my_shaders.common.mixin.accessor.GpuDeviceAccessor;
-import games.enchanted.eg_stop_unloading_my_shaders.common.translations.Messages;
-import games.enchanted.eg_stop_unloading_my_shaders.common.util.PostChainUtil;
-import net.minecraft.client.renderer.PostChainConfig;
 import net.minecraft.client.renderer.ShaderManager;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.profiling.ProfilerFiller;
-import org.slf4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
-
 @Mixin(ShaderManager.class)
 public class ShaderManagerMixin {
-//    @Inject(
-//        at = @At("HEAD"),
-//        method = "prepare(Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)Lnet/minecraft/client/renderer/ShaderManager$Configs;"
-//    )
-//    private void eg_sumr$onShaderManagerStart(ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfoReturnable<ShaderManager.Configs> cir) {
-//        ShaderReloadManager.startedVanillaReload();
-//    }
-//
-//    @Inject(
-//        at = @At("TAIL"),
-//        method = "apply(Lnet/minecraft/client/renderer/ShaderManager$Configs;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V"
-//    )
-//    private void eg_sumr$onShaderManagerFinish(ShaderManager.Configs object, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
-//        ShaderReloadManager.finishedVanillaReload();
-//    }
-//
-//    @WrapOperation(
-//        at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/systems/GpuDevice;precompilePipeline(Lcom/mojang/blaze3d/pipeline/RenderPipeline;Lcom/mojang/blaze3d/shaders/ShaderSource;)Lcom/mojang/blaze3d/pipeline/CompiledRenderPipeline;"),
-//        method = "apply(Lnet/minecraft/client/renderer/ShaderManager$Configs;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V"
-//    )
-//    private CompiledRenderPipeline eg_sumr$wrapPipelineCompilation(GpuDevice device, RenderPipeline renderPipeline, ShaderSource shaderSource, Operation<CompiledRenderPipeline> original) {
-//        CompiledRenderPipeline compiled = original.call(device, renderPipeline, shaderSource);
-//        if(compiled.isValid() || !ModConstants.isBackendHandled()) return compiled;
-//
-//        GpuDeviceBackend backend = ((GpuDeviceAccessor) device).eg_sumr$getBackend();
-//
-//        if(!(backend instanceof GpuDeviceAdditions deviceAdditions)) {
-//            Logging.error("GpuDeviceBackend implementation '{}' not handled by SUMR", backend.getClass().getCanonicalName());
-//            return compiled;
-//        }
-//
-//        deviceAdditions.eg_sumr$setBypassPipelineCache(true);
-//        CompiledRenderPipeline vanillaCompiled = original.call(device, renderPipeline, ModConstants.getFallbackShaderSource());
-//        deviceAdditions.eg_sumr$setBypassPipelineCache(false);
-//        return vanillaCompiled;
-//    }
-//
-//    // Identifier local is the result of POST_CHAIN_ID_CONVERTER.fileToId
-//    @WrapOperation(
-//        at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;Ljava/lang/Object;)V", remap = false),
-//        method = "loadPostChain(Lnet/minecraft/resources/Identifier;Lnet/minecraft/server/packs/resources/Resource;Lcom/google/common/collect/ImmutableMap$Builder;)V"
-//    )
-//    private static void eg_sumr$addDummyPostChainConfigIfFailedToParse(Logger instance, String string, Object o, Object exception, Operation<Void> original, Identifier rawLocation, Resource postChain, ImmutableMap.Builder<Identifier, PostChainConfig> output, @Local(ordinal = 1) Identifier name) {
-//        original.call(instance, string, o, exception);
-//        if(!ModConstants.isBackendHandled()) return;
-//
-//        output.put(name, PostChainUtil.createDummyPostChainConfig());
-//        ShaderReloadManager.showErrorMessage(Messages.getFailedToLoadPostChainMessage(name.toString()));
-//        ShaderReloadManager.showContinuationErrorMessage(Component.literal(((Exception) exception).getMessage()));
-//    }
-//
-//    @WrapOperation(
-//        at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/preprocessor/GlslPreprocessor;process(Ljava/lang/String;)Ljava/util/List;"),
-//        method = "loadShader"
-//    )
-//    private static List<String> eg_sumr$wrapShaderPreprocessError(GlslPreprocessor instance, String shaderData, Operation<List<String>> original, Identifier shaderID) {
-//        if(!ModConstants.isBackendHandled()) {
-//            return original.call(instance, shaderData);
-//        }
-//
-//        try {
-//            return original.call(instance, shaderData);
-//        } catch (Exception e) {
-//            ShaderReloadManager.showErrorMessage(
-//                Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.preprocessor_error", "_Pre-processor error in %s:", shaderID.toString())
-//            );
-//            if(e instanceof IndexOutOfBoundsException) {
-//                ShaderReloadManager.showContinuationErrorMessage(Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.preprocessor_error.probably_no_version", "_#version directive may be missing"));
-//            } else {
-//                ShaderReloadManager.showContinuationErrorMessage(Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.preprocessor_error.check_log", "_check output log for full exception"));
-//                Logging.error("Pre-processor error in {}:\n{}", shaderID.toString(), e.getMessage());
-//            }
-//            return List.of("");
-//        }
-//    }
+    @Inject(
+        at = @At("HEAD"),
+        method = "loadConfigs"
+    )
+    private static void eg_sumr$onShaderManagerStart(ResourceManager manager, CallbackInfoReturnable<ShaderManager.Configs> cir) {
+        ShaderReloadManager.startedVanillaReload();
+    }
+
+    @Inject(
+        at = @At("TAIL"),
+        method = "apply"
+    )
+    private void eg_sumr$onShaderManagerFinish(GpuDevice device, @Coerce Object compilations, CallbackInfo ci) {
+        ShaderReloadManager.finishedVanillaReload();
+    }
 }

@@ -1,26 +1,21 @@
 {
-  "required": true,
-  "minVersion": "0.8",
-  "package": "games.enchanted.eg_stop_unloading_my_shaders.common.mixin",
-  "compatibilityLevel": "JAVA_${java_ver}",
-  "mixins": [
-  ],
-  "client": [
-    "KeyboardHandlerMixin",
-    "accessor.GpuDeviceAccessor",
-    "accessor.GuiRendererAccessor",
-    "accessor.ShaderManagerAccessor",
-    "overlay.CustomOverlayMouseEventsMixin",
-    "overlay.CustomOverlayRendererMixin",
-    "overlay.CustomOverlayTickerMixin",
-    "shader.CompilationCacheMixin",
-    "shader.ShaderManagerMixin",
-    "shader.ShaderManagerPreprocessorMixin",
-    "shader.gl.GlDeviceMixin",
-    "shader.gl.GlProgramMixin",
-    "shader.vk.VulkanDeviceMixin"
-  ],
-  "injectors": {
-    "defaultRequire": 1
+    "required": true,
+    "minVersion": "0.8",
+    "package": "games.enchanted.eg_stop_unloading_my_shaders.common.mixin",
+    "compatibilityLevel": "JAVA_${java_ver}",
+    "mixins": [
+    ],
+    "client": [
+        "KeyboardHandlerMixin",
+        "accessor.GuiRendererAccessor",
+        "accessor.ShaderManagerAccessor",
+        "overlay.CustomOverlayMouseEventsMixin",
+        "overlay.CustomOverlayRendererMixin",
+        "overlay.CustomOverlayTickerMixin",
+        "shader.PipelineBuilderMixin",
+        "shader.ShaderManagerMixin",
+    ],
+    "injectors": {
+        "defaultRequire": 1
   }
 }
