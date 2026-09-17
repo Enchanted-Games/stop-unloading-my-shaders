@@ -80,6 +80,14 @@ public abstract class ShaderReloadManager {
         showMessage(Messages.appendMessagePrefix(Messages.MessagePrefix.ERROR_CONTINUATION, Messages.colourMessageGrey(message)));
     }
 
+    public static void showWarnMessage(Component message) {
+        showWarnMessage(message, -1);
+    }
+
+    public static void showWarnMessage(Component message, int ticksVisible) {
+        showMessage(Messages.appendMessagePrefix(Messages.MessagePrefix.WARN, message), ticksVisible);
+    }
+
     public static void showMessage(Component message) {
         showMessage(message, -1);
     }

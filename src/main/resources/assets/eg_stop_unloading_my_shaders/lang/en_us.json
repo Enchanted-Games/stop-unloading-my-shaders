@@ -1,5 +1,6 @@
 {
   "prefix.eg_stop_unloading_my_shaders.info": "[SUMR Info]:",
+  "prefix.eg_stop_unloading_my_shaders.warn": "[SUMR Warn]:",
   "prefix.eg_stop_unloading_my_shaders.error": "[SUMR Error]:",
   "prefix.eg_stop_unloading_my_shaders.error_continuation": "└",
   "prefix.eg_stop_unloading_my_shaders.sumr": "[SUMR]:",
@@ -11,19 +12,12 @@
 
   "key.eg_stop_unloading_my_shaders.reload_shaders": "[SUMR] Reload Shaders",
 
-  "debug.eg_stop_unloading_my_shaders.post_chain_load_error": "Failed to load post_effect %s:",
-  "debug.eg_stop_unloading_my_shaders.no_post_chain_source_error": "Couldn't find config .json for post_effect: %s",
-  "debug.eg_stop_unloading_my_shaders.linkage_error": "Failed to link programs for pipeline %s:",
+  "debug.eg_stop_unloading_my_shaders.post_chain_load_error": "Failed to load post_effect '%s':",
+  "debug.eg_stop_unloading_my_shaders.post_chain_does_not_exist": "Post effect '%s' does not exist",
+  "debug.eg_stop_unloading_my_shaders.post_chain_invalid_targets": "Requested post effect '%s' can not be used because it uses inaccessible targets: %s",
   "debug.eg_stop_unloading_my_shaders.no_source_error": "Couldn't find source for %s shader: %s",
-  "debug.eg_stop_unloading_my_shaders.compilation_error": "Couldn't compile %s shader: %s",
-  "debug.eg_stop_unloading_my_shaders.preprocessor_error": "Pre-processor error in %s:",
-  "debug.eg_stop_unloading_my_shaders.preprocessor_error.probably_no_version": "#version directive may be missing",
-  "debug.eg_stop_unloading_my_shaders.preprocessor_error.check_log": "check output log for full exception",
-
-  "debug.eg_stop_unloading_my_shaders.no_full_error": "Couldn't get full error message",
-
-
-  "config.eg_stop_unloading_my_shaders.unhandled_backend": "Don't know how to handle current gpu backend: '%s'",
+  "debug.eg_stop_unloading_my_shaders.pipeline_compilation_error": "Couldn't compile shaders for pipeline '%s'",
+  "debug.eg_stop_unloading_my_shaders.pipeline_fallback_compilation_error": "Couldn't compile fallback shaders for pipeline '%s'. Resourcepacks will be unloaded",
 
 
   "gui.eg_stop_unloading_my_shaders.button.log_mode": "Log messages to: %s",

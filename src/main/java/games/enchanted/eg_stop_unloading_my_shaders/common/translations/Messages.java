@@ -4,6 +4,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 
 public class Messages {
@@ -20,27 +21,27 @@ public class Messages {
     }
 
     public static Component getFailedToLoadPostChainMessage(String location) {
-        return Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.post_chain_load_error", "_Failed to load post_effect %s:", location);
+        return Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.post_chain_load_error", "_Failed to load post_effect '%s':", location);
     }
 
-    public static Component getCouldntFindPostChainSource(String location) {
-        return Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.no_post_chain_source_error", "_Couldn't find config .json for post_effect: %s", location);
+    public static Component getRequestedPostEffectDoesNotExistMessage(String location) {
+        return Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.post_chain_does_not_exist", "_Post effect '%s' does not exist", location);
     }
 
-    public static Component getFailedToLinkMessage(String pipelineLocation) {
-        return Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.linkage_error", "_Failed to link programs for pipeline %s:", pipelineLocation);
+    public static Component getPostChainInvalidTargetsMessage(String location, String targets) {
+        return Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.post_chain_invalid_targets", "_Requested post effect '%s' can not be used because it uses inaccessible targets: %s", location, targets);
     }
 
-    public static Component getCouldntFindSourceMessage(String shaderType, String shaderLocation) {
-        return Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.no_source_error", "_Couldn't find source for %s shader: %s", shaderType, shaderLocation);
+    public static Component getCouldntFindSourceMessage(String shaderType, Identifier shaderId) {
+        return Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.no_source_error", "_Couldn't find source for %s shader: %s", shaderType, shaderId);
     }
 
-    public static Component getCouldntCompileShaderMessage(String shaderType, String shaderLocation) {
-        return Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.compilation_error", "_Couldn't compile %s shader: %s", shaderType, shaderLocation);
+    public static Component getCouldntCompilePipelineMessage(Identifier pipelineId) {
+        return Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.pipeline_compilation_error", "_Couldn't compile shaders for pipeline '%s'", pipelineId);
     }
 
-    public static Component getCouldntGetFullErrorMessage() {
-        return Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.no_full_error", "_Couldn't get full error message");
+    public static Component getCouldntCompilePipelineWithFallbackMessage(Identifier pipelineId) {
+        return Component.translatableWithFallback("debug.eg_stop_unloading_my_shaders.pipeline_fallback_compilation_error", "_Couldn't compile fallback shaders for pipeline '%s'. Resourcepacks will be unloaded", pipelineId);
     }
 
     public static Component colourMessageGrey(Component message) {
@@ -49,6 +50,7 @@ public class Messages {
 
     public enum MessagePrefix {
         INFO("prefix.eg_stop_unloading_my_shaders.info", "_[SUMR Info]:", Style.EMPTY.withBold(true).withColor(ChatFormatting.YELLOW)),
+        WARN("prefix.eg_stop_unloading_my_shaders.warn", "_[SUMR Warn]:", Style.EMPTY.withBold(true).withColor(ChatFormatting.GOLD)),
         ERROR("prefix.eg_stop_unloading_my_shaders.error", "_[SUMR Error]:", Style.EMPTY.withBold(true).withColor(ChatFormatting.RED)),
         ERROR_CONTINUATION("prefix.eg_stop_unloading_my_shaders.error_continuation", "_└", Style.EMPTY.withBold(true).withColor(ChatFormatting.RED)),
         SUMR("prefix.eg_stop_unloading_my_shaders.sumr", "_[SUMR]:", Style.EMPTY.withBold(true).withColor(ChatFormatting.YELLOW)),
