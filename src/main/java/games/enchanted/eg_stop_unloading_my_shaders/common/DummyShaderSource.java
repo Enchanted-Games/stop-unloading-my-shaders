@@ -18,7 +18,7 @@ public class DummyShaderSource implements ShaderSource {
 void main() {
     gl_Position = vec4(0.0, 0.0, 0.0, 1.0);
 }
-                """;
+""";
         } else if(type == ShaderType.FRAGMENT) {
             return """
 #version 330
@@ -29,7 +29,7 @@ layout(location = 0) out vec4 fragColor;
 void main() {
     fragColor = vec4(1.0, 0.0, 1.0, 1.0);
 }
-                """;
+""";
         }
         return null;
     }

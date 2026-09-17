@@ -50,7 +50,8 @@ public abstract class PipelineBuilderMixin {
                 Component.literal(e.getMessage())
             );
             cir.setReturnValue(generateBackendCreateInfo(pipeline, FallbackShaderSource.getFallbackShaderSource(), shaderCreateInfos, uniformBindings));
-        } else if(shaderSource instanceof FallbackShaderSource) {
+        }
+        if(shaderSource instanceof FallbackShaderSource) {
             // failed compilation with fallback shaders, so try one last time with dummy shaders
             ShaderReloadManager.showShaderErrorMessage(
                 // TODO: better messages

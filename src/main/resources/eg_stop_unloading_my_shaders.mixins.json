@@ -9,11 +9,12 @@
         "KeyboardHandlerMixin",
         "accessor.GuiRendererAccessor",
         "accessor.ShaderManagerAccessor",
+        "gl.GlProgramMixin",
         "overlay.CustomOverlayMouseEventsMixin",
         "overlay.CustomOverlayRendererMixin",
         "overlay.CustomOverlayTickerMixin",
         "shader.PipelineBuilderMixin",
-        "shader.ShaderManagerMixin",
+        "shader.ShaderManagerMixin"
     ],
     "injectors": {
         "defaultRequire": 1
