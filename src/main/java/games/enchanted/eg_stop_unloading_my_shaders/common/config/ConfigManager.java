@@ -21,9 +21,6 @@ public class ConfigManager {
     private static final String LOGGING_MODE_KEY = "logging_mode";
     public static ErrorLoggingMode loggingMode = ErrorLoggingMode.BOX;
 
-    private static final String LINKER_LOGS_KEY = "disable_linker_logs";
-    public static boolean disableLinkerLogs = false;
-
     private static final String CONFIG_FILE_NAME = "eg_stop_unloading_my_shaders.properties";
 
     private static Path getConfigFilePath() {
@@ -56,11 +53,6 @@ public class ConfigManager {
             }
         }
 
-
-        String disableLinkerLogs = modProperties.getProperty(LINKER_LOGS_KEY);
-        if(disableLinkerLogs != null) {
-            ConfigManager.disableLinkerLogs = Boolean.parseBoolean(disableLinkerLogs);
-        }
         saveFile();
     }
 
@@ -68,7 +60,6 @@ public class ConfigManager {
         Properties modProperties = new Properties();
 
         modProperties.setProperty(LOGGING_MODE_KEY, loggingMode.getSerializedName());
-        modProperties.setProperty(LINKER_LOGS_KEY, disableLinkerLogs ? "true" : "false");
 
         try {
             modProperties.store(new FileWriter(getConfigFilePath().toFile()), "Stop Unloading My Resourcepacks Config");
@@ -86,7 +77,6 @@ public class ConfigManager {
     public static void logCurrentConfig() {
         StringBuilder builder = new StringBuilder("Current Config Values:");
         builder.append("\n").append(LOGGING_MODE_KEY).append(": ").append(loggingMode.getSerializedName());
-        builder.append("\n").append(LINKER_LOGS_KEY).append(": ").append(disableLinkerLogs);
         Logging.info(builder.toString());
     }
 

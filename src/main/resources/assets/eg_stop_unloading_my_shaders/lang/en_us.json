@@ -23,9 +23,6 @@
   "gui.eg_stop_unloading_my_shaders.button.log_mode": "Log messages to: %s",
   "gui.eg_stop_unloading_my_shaders.button.log_mode.tooltip": "Box: Logs messages to a box in the top left of the screen, visible everywhere.\nChat: Logs messages to the in-game chat, only visible in a world.\nBoth: Logs messages to the box and chat",
 
-  "gui.eg_stop_unloading_my_shaders.button.disable_linker_logs": "Hide linker logs: %s",
-  "gui.eg_stop_unloading_my_shaders.button.disable_linker_logs.tooltip": "Prevents the game from logging additional warnings when linking shaders. Generally these can be ignored and you can enable this to clear up the output log a bit",
-
   "gui.eg_stop_unloading_my_shaders.config.title": "Stop Unloading My Resourcepacks Config",
   "config.eg_stop_unloading_my_shaders.log_mode.box": "Box",
   "config.eg_stop_unloading_my_shaders.log_mode.chat": "Chat",
